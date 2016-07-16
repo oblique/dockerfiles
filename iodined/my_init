@@ -34,6 +34,6 @@ echo 1 > /proc/sys/net/ipv4/conf/eth0/forwarding
 echo 1 > /proc/sys/net/ipv4/ip_forward
 iptables -w -t nat -I POSTROUTING -o eth0 -s $IODINE_TUN_IP -j MASQUERADE
 
-iodined -f -c -l $IODINE_BIND_ADDRESS -n $IODINE_EXT_IP \
+exec iodined -f -c -l $IODINE_BIND_ADDRESS -n $IODINE_EXT_IP \
     -p $IODINE_PORT -P "$IODINE_PASSWORD" -u nobody \
     $IODINE_TUN_IP $IODINE_TOP_DOMAIN
