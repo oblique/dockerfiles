@@ -20,7 +20,7 @@ is_privileged || die "This container needs to be run with '--privileged' option"
 [[ -z "$IODINE_TOP_DOMAIN" ]] && die "IODINE_TOP_DOMAIN environment variable is mandatory"
 [[ -z "$IODINE_PASSWORD" ]] && die "IODINE_PASSWORD environment variable is mandatory"
 
-IODINE_TUN_IP=${IODINE_TUN_IP:-172.18.42.1/24}
+IODINE_TUN_IP=${IODINE_TUN_IP:-10.0.0.1/24}
 IODINE_EXT_IP=${IODINE_EXT_IP:-$(extip)}
 IODINE_PORT=${IODINE_PORT:-53}
 IODINE_BIND_ADDRESS=${IODINE_BIND_ADDRESS:-0.0.0.0}
