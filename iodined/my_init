@@ -22,8 +22,8 @@ is_privileged || die "This container needs to be run with '--privileged' option"
 
 IODINED_TUN_IP=${IODINED_TUN_IP:-10.0.0.1/24}
 IODINED_EXT_IP=${IODINED_EXT_IP:-$(extip)}
-
-[[ -z "$IODINED_EXT_IP" ]] && die "Failed to get the external IP"
+# in case of `extip` failure, use `auto`
+IODINED_EXT_IP=${IODINED_EXT_IP:-auto}
 
 [[ ! -d /dev/net ]] && mkdir -p /dev/net
 [[ ! -c /dev/net/tun ]] && mknod /dev/net/tun c 0xa 0xc8
