@@ -17,23 +17,20 @@ is_privileged() {
 }
 
 is_privileged || die "This container needs to be run with '--privileged' option"
-[[ -z "$IODINE_TOP_DOMAIN" ]] && die "IODINE_TOP_DOMAIN environment variable is mandatory"
-[[ -z "$IODINE_PASSWORD" ]] && die "IODINE_PASSWORD environment variable is mandatory"
+[[ -z "$IODINED_TOP_DOMAIN" ]] && die "IODINED_TOP_DOMAIN environment variable is mandatory"
+[[ -z "$IODINED_PASSWORD" ]] && die "IODINED_PASSWORD environment variable is mandatory"
 
-IODINE_TUN_IP=${IODINE_TUN_IP:-10.0.0.1/24}
-IODINE_EXT_IP=${IODINE_EXT_IP:-$(extip)}
-IODINE_PORT=${IODINE_PORT:-53}
-IODINE_BIND_ADDRESS=${IODINE_BIND_ADDRESS:-0.0.0.0}
+IODINED_TUN_IP=${IODINED_TUN_IP:-10.0.0.1/24}
+IODINED_EXT_IP=${IODINED_EXT_IP:-$(extip)}
 
-[[ -z "$IODINE_EXT_IP" ]] && die "Failed to get the external IP"
+[[ -z "$IODINED_EXT_IP" ]] && die "Failed to get the external IP"
 
 [[ ! -d /dev/net ]] && mkdir -p /dev/net
 [[ ! -c /dev/net/tun ]] && mknod /dev/net/tun c 0xa 0xc8
 
 echo 1 > /proc/sys/net/ipv4/conf/eth0/forwarding
 echo 1 > /proc/sys/net/ipv4/ip_forward
-iptables -w -t nat -I POSTROUTING -o eth0 -s $IODINE_TUN_IP -j MASQUERADE
+iptables -w -t nat -I POSTROUTING -o eth0 -s $IODINED_TUN_IP -j MASQUERADE
 
-exec iodined -f -c -l $IODINE_BIND_ADDRESS -n $IODINE_EXT_IP \
-    -p $IODINE_PORT -P "$IODINE_PASSWORD" -u nobody \
-    $IODINE_TUN_IP $IODINE_TOP_DOMAIN
+exec iodined -f -c -n $IODINED_EXT_IP -P "$IODINED_PASSWORD" -u nobody \
+    $IODINED_TUN_IP $IODINED_TOP_DOMAIN
