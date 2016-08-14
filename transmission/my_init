@@ -1,0 +1,14 @@
+#!/bin/bash
+
+ARGS=(--foreground --allowed '*' --config-dir /config
+      --download-dir /downloads -c /watch)
+
+[[ -n "$PEER_PORT" ]] && ARGS+=(--peerport $PEER_PORT)
+
+if [[ -n "$AUTH_USERNAME" && -n "$AUTH_PASSWORD" ]]; then
+    ARGS+=(--auth --username "$AUTH_USERNAME" --password "$AUTH_PASSWORD")
+else
+    ARGS+=(--no-auth)
+fi
+
+exec transmission-daemon "${ARGS[@]}"
