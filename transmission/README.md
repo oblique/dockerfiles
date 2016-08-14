@@ -18,6 +18,7 @@ docker run -d -u $(id -u):$(id -g) -p 9091:9091 \
     -v /path/to/downloads:/downloads \
     -v /path/to/config:/config \
     -v /path/to/watch:/watch \
+    -v /etc/localtime:/etc/localtime:ro \
     oblique/transmission
 ```
 
@@ -30,6 +31,7 @@ docker run -d -u $(id -u):$(id -g) -p 9091:9091 \
     -v /path/to/downloads:/downloads \
     -v /path/to/config:/config \
     -v /path/to/watch:/watch \
+    -v /etc/localtime:/etc/localtime:ro \
     oblique/transmission
 ```
 
@@ -40,5 +42,6 @@ docker run -d -u $(id -u):$(id -g) --net=host \
     -v /path/to/downloads:/downloads \
     -v /path/to/config:/config \
     -v /path/to/watch:/watch \
+    -v /etc/localtime:/etc/localtime:ro \
     oblique/transmission
 ```
