@@ -1,12 +1,8 @@
-FROM debian
+FROM alpine
 
-RUN apt-get -y update && \
-    apt-get -y upgrade && \
-    apt-get -y install transmission-daemon && \
-    apt-get -y clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache transmission-daemon
 
-RUN useradd -m -s /bin/bash user
+RUN adduser -D -s /bin/sh user
 USER user
 
 VOLUME ['/config' '/downloads' '/watch']

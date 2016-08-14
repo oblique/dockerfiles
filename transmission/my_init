@@ -1,14 +1,17 @@
-#!/bin/bash
+#!/bin/sh
 
-ARGS=(--foreground --allowed '*' --config-dir /config
-      --download-dir /downloads -c /watch)
+# disable filename expansion (globbing) otherwise AUTH_PASSWORD
+# will not be able to have '*' character
+set -f
 
-[[ -n "$PEER_PORT" ]] && ARGS+=(--peerport $PEER_PORT)
+set -- --foreground --allowed * --config-dir /config --download-dir /downloads -c /watch
 
-if [[ -n "$AUTH_USERNAME" && -n "$AUTH_PASSWORD" ]]; then
-    ARGS+=(--auth --username "$AUTH_USERNAME" --password "$AUTH_PASSWORD")
+[ -n "$PEER_PORT" ] && set -- "$@" --peerport $PEER_PORT
+
+if [ -n "$AUTH_USERNAME" -a -n "$AUTH_PASSWORD" ]; then
+    set -- "$@" --auth --username "$AUTH_USERNAME" --password "$AUTH_PASSWORD"
 else
-    ARGS+=(--no-auth)
+    set -- "$@" --no-auth
 fi
 
-exec transmission-daemon "${ARGS[@]}"
+exec transmission-daemon "$@"
