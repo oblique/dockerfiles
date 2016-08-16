@@ -4,7 +4,8 @@
 # will not be able to have '*' character
 set -f
 
-set -- --foreground --allowed * --config-dir /config --download-dir /downloads -c /watch
+set -- --foreground --allowed * --config-dir /config --download-dir /downloads \
+    --incomplete-dir /incomplete -c /watch
 
 [ -n "$PEER_PORT" ] && set -- "$@" --peerport $PEER_PORT
 
