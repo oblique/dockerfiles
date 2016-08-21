@@ -1,0 +1,6 @@
+#!/bin/sh
+
+mkdir -p /config/data
+touch /config/CouchPotato.cfg
+
+exec /CouchPotatoServer/CouchPotato.py --data_dir /config/data --config_file=/config/CouchPotato.cfg --console_log
