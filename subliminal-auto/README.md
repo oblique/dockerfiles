@@ -5,6 +5,8 @@ found then it runs [subliminal](https://github.com/Diaoul/subliminal) to downloa
 
 ## Environment variables
 
+* `PUID` - UID for the subliminal process (default: 0)
+* `PGID` - GID for the subliminal process (default: 0)
 * `WATCH_DIRS` - Colon separated watch directories (mandatory)
 * `LANGS` - Comma separated, [2 letter country code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (mandatory)
 * `EXT` - Comma separated video file extensions (default: `mkv,mp4,m4v,avi,mpg,mpeg,wmv,webm,mov`)
@@ -20,7 +22,9 @@ found then it runs [subliminal](https://github.com/Diaoul/subliminal) to downloa
 ## Usage
 
 ```
-docker run -d -u $(id -u):$(id -g) \
+docker run -d \
+    -e PUID=$(id -u)
+    -e PGID=$(id -g)
     -e WATCH_DIRS=/movies:/series
     -e LANGS=en,el
     -v /path/to/movies:/movies

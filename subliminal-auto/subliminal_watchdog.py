@@ -48,7 +48,7 @@ def download_subs(path):
     if not is_video_file(path):
         return
 
-    cmd = ['subliminal']
+    cmd = ['subliminal', '--cache-dir', '/cache']
 
     if addic7ed_user and addic7ed_pass:
         cmd += ['--addic7ed', addic7ed_user, addic7ed_pass]
