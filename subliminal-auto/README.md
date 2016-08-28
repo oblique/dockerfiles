@@ -1,8 +1,7 @@
 ## Image
 
 This image watch directories of your choice for new videos. If video is
-found then it runs [subliminal](https://github.com/Diaoul/subliminal) to
-download the subtitles.
+found then it runs [subliminal](https://github.com/Diaoul/subliminal) to download the subtitles.
 
 ## Environment variables
 
@@ -34,5 +33,5 @@ docker run -d -u $(id -u):$(id -g) \
 The reason that I created this image is because CouchPotato was doing
 a bad job with the subtitles. Here's how you can integrate it:
 
-On CouchPotato, go to `Settings`, then `Renamer` and set `File Naming`
-to `<original>.<ext>`. Also disable `Download subtitles`.
+On CouchPotato, go to `Settings`, then `Renamer` and set `File Naming` to `<original>.<ext>`.
+Also disable `Download subtitles`.
