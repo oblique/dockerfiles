@@ -35,6 +35,8 @@ ext = ext.split(',')
 
 
 def is_video_file(path):
+    if os.path.isdir(path):
+        return False
     for x in ext:
         if path.lower().endswith('.' + x.lower()):
             return True
@@ -42,9 +44,6 @@ def is_video_file(path):
 
 
 def download_subs(path):
-    if os.path.isdir(path):
-        return
-
     if not is_video_file(path):
         return
 
@@ -69,8 +68,10 @@ def download_subs(path):
 
 class EventHandler(FileSystemEventHandler):
     def on_created(self, event):
-        if not event.is_directory:
-            download_subs(event.src_path)
+        download_subs(event.src_path)
+
+    def on_moved(self, event):
+        download_subs(event.dest_path)
 
 
 event_handler = EventHandler()
