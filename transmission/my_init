@@ -18,7 +18,7 @@ mkdir_if_needed() {
     [ -d "$1" ] && return
     [ -e "$1" ] && die "'$1' must be a directory"
     mkdir -p "$1"
-    chmod $PUID:$PGID "$1"
+    chown $PUID:$PGID "$1"
 }
 
 # set defaults
