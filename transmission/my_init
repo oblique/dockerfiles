@@ -26,6 +26,11 @@ PUID=${PUID:-0}
 PGID=${PGID:-0}
 export DOWNLOAD_DIR="${DOWNLOAD_DIR:-/data}"
 
+# fix /config permissions
+usermod -o -u $PUID user
+groupmod -o -g $PGID user
+chown -R $PUID:$PGID /config
+
 # create directories if needed
 mkdir_if_needed "$DOWNLOAD_DIR"
 mkdir_if_needed "$INCOMPLETE_DIR"
@@ -34,11 +39,6 @@ mkdir_if_needed "$INCOMPLETE_DIR"
 # we need to disable CoW, otherwise we can have corrupted files
 fix_btrfs "$DOWNLOAD_DIR"
 fix_btrfs "$INCOMPLETE_DIR"
-
-# fix /config permissions
-usermod -o -u $PUID user
-groupmod -o -g $PGID user
-chown -R $PUID:$PGID /config
 
 # start it
 exec su -pc /start user

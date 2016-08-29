@@ -1,6 +1,6 @@
 FROM alpine:edge
 
-RUN apk add --no-cache transmission-daemon e2fsprogs-extra && \
+RUN apk add --no-cache transmission-daemon e2fsprogs-extra shadow && \
     adduser -D -s /bin/sh user && \
     passwd -d user
 
