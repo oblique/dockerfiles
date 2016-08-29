@@ -1,22 +1,44 @@
 #!/bin/sh
 
-# disable filename expansion (globbing) otherwise AUTH_PASSWORD
-# will not be able to have '*' character
-set -f
+die() {
+    echo "$@"
+    exit 1
+}
 
-DOWNLOAD_DIR="${DOWNLOAD_DIR:-/data}"
+fix_btrfs() {
+    [ -z "$1" ] && return
+    if df -T "$1" | awk '{print $2}' | grep -q btrfs; then
+        echo "Btrfs detected, disabling CoW on '$1'"
+        chattr -R +C "$1"
+    fi
+}
 
-set -- --foreground --allowed * --config-dir /config \
-    --download-dir "$DOWNLOAD_DIR"
+mkdir_if_needed() {
+    [ -z "$1" ] && return
+    [ -d "$1" ] && return
+    [ -e "$1" ] && die "'$1' must be a directory"
+    mkdir -p "$1"
+    chmod $PUID:$PGID "$1"
+}
 
-[ -n "$PEER_PORT" ] && set -- "$@" --peerport $PEER_PORT
-[ -n "$INCOMPLETE_DIR" ] && set -- "$@" --incomplete-dir "$INCOMPLETE_DIR"
-[ -n "$WATCH_DIR" ] && set -- "$@" -c "$WATCH_DIR"
+# set defaults
+PUID=${PUID:-0}
+PGID=${PGID:-0}
+export DOWNLOAD_DIR="${DOWNLOAD_DIR:-/data}"
 
-if [ -n "$AUTH_USERNAME" -a -n "$AUTH_PASSWORD" ]; then
-    set -- "$@" --auth --username "$AUTH_USERNAME" --password "$AUTH_PASSWORD"
-else
-    set -- "$@" --no-auth
-fi
+# create directories if needed
+mkdir_if_needed "$DOWNLOAD_DIR"
+mkdir_if_needed "$INCOMPLETE_DIR"
 
-exec transmission-daemon "$@"
+# if the fs of the download directories is btrfs then
+# we need to disable CoW, otherwise we can have corrupted files
+fix_btrfs "$DOWNLOAD_DIR"
+fix_btrfs "$INCOMPLETE_DIR"
+
+# fix /config permissions
+usermod -o -u $PUID user
+groupmod -o -g $PGID user
+chown -R $PUID:$PGID /config
+
+# start it
+exec su -pc /start user

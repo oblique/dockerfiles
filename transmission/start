@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# disable filename expansion (globbing) otherwise AUTH_PASSWORD
+# will not be able to have '*' character
+set -f
+
+set -- --foreground --allowed * --config-dir /config \
+    --download-dir "$DOWNLOAD_DIR"
+
+[ -n "$PEER_PORT" ] && set -- "$@" --peerport $PEER_PORT
+[ -n "$INCOMPLETE_DIR" ] && set -- "$@" --incomplete-dir "$INCOMPLETE_DIR"
+[ -n "$WATCH_DIR" ] && set -- "$@" -c "$WATCH_DIR"
+
+if [ -n "$AUTH_USERNAME" -a -n "$AUTH_PASSWORD" ]; then
+    set -- "$@" --auth --username "$AUTH_USERNAME" --password "$AUTH_PASSWORD"
+else
+    set -- "$@" --no-auth
+fi
+
+exec transmission-daemon "$@"

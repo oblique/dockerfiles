@@ -1,12 +1,11 @@
-FROM alpine
+FROM alpine:edge
 
-RUN apk add --no-cache transmission-daemon
-
-RUN adduser -D -s /bin/sh user
-USER user
+RUN apk add --no-cache transmission-daemon e2fsprogs-extra && \
+    adduser -D -s /bin/sh user && \
+    passwd -d user
 
 VOLUME /config /data
 EXPOSE 9091
 
-ADD my_init /
-CMD '/my_init'
+ADD my_init start /
+CMD /my_init
