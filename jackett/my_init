@@ -1,0 +1,10 @@
+#!/bin/sh
+
+[ -z "$PUID" ] && PUID=$(id -u user)
+[ -z "$PGID" ] && PGID=$(id -g user)
+
+usermod -o -u $PUID user
+groupmod -o -g $PGID user
+chown -R $PUID:$PGID /config
+
+exec su -pc /start user
