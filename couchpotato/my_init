@@ -3,4 +3,14 @@
 mkdir -p /config/data
 touch /config/CouchPotato.cfg
 
-exec /CouchPotatoServer/CouchPotato.py --data_dir /config/data --config_file=/config/CouchPotato.cfg --console_log
+# set defaults
+PUID=${PUID:-1000}
+PGID=${PGID:-1000}
+
+# fix /config permissions
+usermod -o -u $PUID user
+groupmod -o -g $PGID user
+chown -R $PUID:$PGID /config
+
+# start it
+exec su -pc /start user
