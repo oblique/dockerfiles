@@ -1,6 +1,8 @@
 ## Image
 
-Docker image for [Jackett](https://github.com/Jackett/Jackett)
+Docker image for [Jackett](https://github.com/Jackett/Jackett) and [Jackett Public](https://github.com/dreamcat4/Jackett-public).
+
+Jackett is listening to port 9117 and Jackett Public to port 9118.
 
 ## Environment variables
 
@@ -10,7 +12,7 @@ Docker image for [Jackett](https://github.com/Jackett/Jackett)
 ## Usage
 
 ```
-docker run -d -p 9117:9117 \
+docker run -d -p 9117:9117 -p 9118:9118 \
     -e PUID=$(id -u) \
     -e PGID=$(id -g) \
     -v /path/to/config:/config \
