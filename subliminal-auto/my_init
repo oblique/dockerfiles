@@ -1,8 +1,9 @@
 #!/bin/sh
 set -e
 
-[ -n "$PUID" ] || PUID=0
-[ -n "$PGID" ] || PGID=0
+# set defaults
+PUID=${PUID:-1000}
+PGID=${PGID:-1000}
 
 mkdir -p /cache
 usermod -o -u $PUID user

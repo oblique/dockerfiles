@@ -5,8 +5,8 @@ found then it runs [subliminal](https://github.com/Diaoul/subliminal) to downloa
 
 ## Environment variables
 
-* `PUID` - UID for the subliminal process (default: 0)
-* `PGID` - GID for the subliminal process (default: 0)
+* `PUID` - UID for the subliminal process (default: 1000)
+* `PGID` - GID for the subliminal process (default: 1000)
 * `WATCH_DIRS` - Colon separated watch directories (mandatory)
 * `LANGS` - Comma separated, [2 letter country code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (mandatory)
 * `EXT` - Comma separated video file extensions (default: `mkv,mp4,m4v,avi,mpg,mpeg,wmv,webm,mov`)
