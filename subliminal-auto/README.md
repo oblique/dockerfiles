@@ -23,12 +23,12 @@ found then it runs [subliminal](https://github.com/Diaoul/subliminal) to downloa
 
 ```
 docker run -d \
-    -e PUID=$(id -u)
-    -e PGID=$(id -g)
-    -e WATCH_DIRS=/movies:/series
-    -e LANGS=en,el
-    -v /path/to/movies:/movies
-    -v /path/to/series:/series
+    -e PUID=$(id -u) \
+    -e PGID=$(id -g) \
+    -e WATCH_DIRS=/movies:/series \
+    -e LANGS=en,el \
+    -v /path/to/movies:/movies \
+    -v /path/to/series:/series \
     oblique/subliminal-auto
 ```
 

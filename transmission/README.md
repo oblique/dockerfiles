@@ -20,8 +20,8 @@ Docker image for [transmission](https://www.transmissionbt.com/) daemon.
 ```
 docker run -d -p 9091:9091 \
     -p 51413:51413 -p 51413:51413/udp \
-    -e PUID=$(id -u)
-    -e PGID=$(id -g)
+    -e PUID=$(id -u) \
+    -e PGID=$(id -g) \
     -v /etc/localtime:/etc/localtime:ro \
     -v /path/to/config:/config \
     -v /path/to/downloads:/data \
@@ -33,8 +33,8 @@ docker run -d -p 9091:9091 \
 ```
 docker run -d -p 9091:9091 \
     -e PEER_PORT=12345 -p 12345:12345 -p 12345:12345/udp \
-    -e PUID=$(id -u)
-    -e PGID=$(id -g)
+    -e PUID=$(id -u) \
+    -e PGID=$(id -g) \
     -e AUTH_USERNAME=admin -e AUTH_PASSWORD=pass \
     -e DOWNLOAD_DIR=/data/complete \
     -e INCOMPLETE_DIR=/data/incomplete \
@@ -49,8 +49,8 @@ docker run -d -p 9091:9091 \
 
 ```
 docker run -d --net=host \
-    -e PUID=$(id -u)
-    -e PGID=$(id -g)
+    -e PUID=$(id -u) \
+    -e PGID=$(id -g) \
     -v /etc/localtime:/etc/localtime:ro \
     -v /path/to/config:/config \
     -v /path/to/downloads:/data \
