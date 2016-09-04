@@ -3,12 +3,9 @@ FROM debian
 ADD install.sh /
 RUN /install.sh && rm -f /install.sh
 
-RUN useradd -m -s /bin/bash user && \
+RUN useradd -s /bin/bash user && \
+        usermod -d /config user && \
         passwd -d user
-
-# Jackett Public doesn't have the `-d` option, so we need to workaround
-RUN mkdir -p /home/user/.config && \
-        ln -s /config/jackett-public /home/user/.config/Jackett-public
 
 VOLUME /config
 EXPOSE 9117 9118

@@ -4,10 +4,6 @@
 PUID=${PUID:-1000}
 PGID=${PGID:-1000}
 
-# create config directories
-mkdir -p /config/jackett
-mkdir -p /config/jackett-public
-
 # fix permissions
 usermod -o -u $PUID user
 groupmod -o -g $PGID user
