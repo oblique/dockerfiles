@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import os
 import time
+import glob
+import shutil
 import subprocess
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -31,16 +33,14 @@ if not ext:
 
 watch_dirs = watch_dirs.split(':')
 langs = langs.split(',')
-ext = ext.split(',')
+ext = ['.' + x.lower() for x in ext.split(',')]
 
 
 def is_video_file(path):
     if os.path.isdir(path):
         return False
-    for x in ext:
-        if path.lower().endswith('.' + x.lower()):
-            return True
-    return False
+    e = os.path.splitext(path.lower())[1]
+    return e in ext
 
 
 def download_subs(path):
@@ -66,11 +66,25 @@ def download_subs(path):
     subprocess.run(cmd)
 
 
+def rename_subs(src_path, dest_path):
+    if not is_video_file(src_path) or not is_video_file(dest_path):
+        return
+
+    src_name = os.path.splitext(src_path)[0]
+    dest_name = os.path.splitext(dest_path)[0]
+
+    for x in glob.glob(src_name + '*.srt'):
+        old_path = x
+        new_path = old_path.replace(src_name, dest_name)
+        shutil.move(old_path, new_path)
+
+
 class EventHandler(FileSystemEventHandler):
     def on_created(self, event):
         download_subs(event.src_path)
 
     def on_moved(self, event):
+        rename_subs(event.src_path, event.dest_path)
         download_subs(event.dest_path)
 
 
