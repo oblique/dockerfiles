@@ -10,7 +10,8 @@ if [ ! -e /config/nzbget.conf ]; then
     cp /opt/nzbget/nzbget.conf /config
     sed -i 's|^MainDir=.*|MainDir=/config/data|' /config/nzbget.conf
     sed -i 's|^DestDir=.*|DestDir=/data|' /config/nzbget.conf
-    sed -i 's|^ControlPassword=.*$|ControlPassword=|' /config/nzbget.conf
+    sed -i 's|^InterDir=.*|InterDir=|' /config/nzbget.conf
+    sed -i 's|^ControlPassword=.*|ControlPassword=|' /config/nzbget.conf
 fi
 
 # fix permissions
