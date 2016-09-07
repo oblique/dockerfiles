@@ -1,2 +1,0 @@
-#!/bin/sh
-exec /CouchPotatoServer/CouchPotato.py --data_dir /config/data --config_file=/config/CouchPotato.cfg --console_log

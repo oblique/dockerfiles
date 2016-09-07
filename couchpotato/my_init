@@ -13,4 +13,4 @@ groupmod -o -g $PGID user
 chown -R $PUID:$PGID /config
 
 # start it
-exec su -pc /start user
+exec supervisord -c /etc/supervisord.conf -n
