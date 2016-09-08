@@ -9,5 +9,6 @@ RUN adduser -D -s /bin/sh user && \
 VOLUME /config /data
 EXPOSE 6789
 
-ADD my_init start /
-CMD /my_init
+ADD services.ini /etc/supervisor.d/
+ADD my_init /
+CMD exec /my_init

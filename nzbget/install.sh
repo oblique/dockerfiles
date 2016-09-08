@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-apk add --no-cache curl shadow
+apk add --no-cache curl shadow supervisor
 
 mkdir -p /opt
 cd /opt

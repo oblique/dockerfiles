@@ -9,4 +9,5 @@ usermod -o -u $PUID user
 groupmod -o -g $PGID user
 chown -R $PUID:$PGID /config
 
+# start it
 exec supervisord -c /etc/supervisor/supervisord.conf -n

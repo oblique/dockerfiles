@@ -1,13 +1,25 @@
 #!/bin/sh
 set -e
 
+if [ -z "$WATCH_DIRS" ]; then
+    echo "WATCH_DIRS is mandatory"
+    exit 1
+fi
+
+if [ -z "$LANGS" ]; then
+    echo "LANGS is mandatory"
+    exit 1
+fi
+
 # set defaults
 PUID=${PUID:-1000}
 PGID=${PGID:-1000}
 
+# fix permissions
 mkdir -p /cache
 usermod -o -u $PUID user
 groupmod -o -g $PGID user
 chown -R $PUID:$PGID /cache
 
-exec su -pc /subliminal_watchdog.py user
+# start it
+exec supervisord -c /etc/supervisord.conf -n

@@ -13,6 +13,6 @@ RUN adduser -D -s /bin/sh user && \
 VOLUME /config /data
 EXPOSE 5050
 
-ADD couchpotato.ini /etc/supervisor.d/
+ADD services.ini /etc/supervisor.d/
 ADD my_init /
-CMD /my_init
+CMD exec /my_init

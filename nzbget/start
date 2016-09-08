@@ -1,2 +1,0 @@
-#!/bin/sh
-exec /opt/nzbget/nzbget -c /config/nzbget.conf -o OutputMode=log -s

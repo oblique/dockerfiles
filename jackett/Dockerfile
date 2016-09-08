@@ -1,4 +1,4 @@
-FROM debian
+FROM debian:jessie
 
 ADD install.sh /
 RUN /install.sh && rm -f /install.sh
@@ -10,6 +10,6 @@ RUN useradd -s /bin/bash user && \
 VOLUME /config
 EXPOSE 9117 9118
 
-ADD jackett.conf /etc/supervisor/conf.d
+ADD services.conf /etc/supervisor/conf.d/
 ADD my_init /
-CMD /my_init
+CMD exec /my_init
