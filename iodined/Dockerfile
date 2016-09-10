@@ -6,8 +6,7 @@ RUN apt-get -y update && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
-ADD my_init /
-
 EXPOSE 53/udp
 
-CMD '/my_init'
+ADD my_init /
+CMD ["/my_init"]
