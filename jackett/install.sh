@@ -4,7 +4,6 @@ set -e
 # use US mirror
 sed -i 's/httpredir/ftp.us/g' /etc/apt/sources.list
 
-apt-get -y clean
 apt-get -y update
 apt-get -y upgrade
 apt-get -y install curl libmono-cil-dev supervisor
