@@ -4,8 +4,8 @@ Docker image for [NGINX](https://www.nginx.com) with autoindex enabled.
 
 ## Environment variables
 
-* `PUID` - Change UID of nginx process
-* `PUID` - Change GID of nginx process
+* `PUID` - UID of the process
+* `PUID` - GID of the process
 
 ## Usage
 

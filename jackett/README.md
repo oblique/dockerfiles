@@ -6,8 +6,8 @@ Jackett is listening to port 9117 and Jackett Public to port 9118.
 
 ## Environment variables
 
-* `PUID` - UID for the transmission-daemon (default: 1000)
-* `PGID` - GID for the transmission-daemon (default: 1000)
+* `PUID` - UID of the process (default: 1000)
+* `PGID` - GID of the process (default: 1000)
 
 ## Usage
 

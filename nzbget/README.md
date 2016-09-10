@@ -4,8 +4,8 @@ Docker image for [NZBGet](http://nzbget.net)
 
 ## Environment variables
 
-* `PUID` - UID for the transmission-daemon (default: 1000)
-* `PGID` - GID for the transmission-daemon (default: 1000)
+* `PUID` - UID of the process (default: 1000)
+* `PGID` - GID of the process (default: 1000)
 
 ## Usage
 
