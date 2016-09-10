@@ -1,4 +1,4 @@
-## iodine server
+## Image
 
 Docker image for [iodine](http://code.kryo.se/iodine/) server.
 
