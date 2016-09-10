@@ -9,9 +9,9 @@ Docker image for [Plex Media Server](https://plex.tv).
 
 ## Ports
 
-`32400` TCP - Plex Media Server
-`32469` TCP and `1900` UDP - DLNA Server
-`32410`, `32412`, `32413`, `32414` UDP - Network discovery
+* `32400` TCP - Plex Media Server
+* `32469` TCP and `1900` UDP - DLNA Server
+* `32410`, `32412`, `32413`, `32414` UDP - Network discovery
 
 ## Usage
 
