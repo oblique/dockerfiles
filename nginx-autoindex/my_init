@@ -1,20 +1,13 @@
-#!/bin/bash
+#!/bin/sh
 
-if [[ -n "$NGINX_UID" ]]; then
-    # if NGINX_GID is not set, use NGINX_UID
-    NGINX_GID=${NGINX_GID:-$NGINX_UID}
+# backward complatible
+[ -n "$NGINX_UID" ] && PUID=${PUID:-$NGINX_UID}
+[ -n "$NGINX_GID" ] && PGID=${PGID:-$NGINX_GID}
+PGID=${PGID:-$PUID}
 
-    # if user or group exist, get their name
-    user_name=$(id -u -n "$NGINX_UID" 2> /dev/null)
-    group_name=$(getent group "$NGINX_GID" | cut -d: -f1 2> /dev/null)
+# set new UID/GID
+[ -n "$PUID" ] && usermod -o -u $PUID nginx
+[ -n "$PGID" ] && groupmod -o -g $PGID nginx
 
-    # if they don't exist, create new user and group and set NGINX_UID/NGINX_GID
-    user_name=${user_name:-user}
-    group_name=${group_name:-user}
-    [[ "$group_name" == "user" ]] && groupadd -g $NGINX_GID user
-    [[ "$user_name" == "user" ]] && useradd -u $NGINX_UID -g $NGINX_GID user
-
-    sed -i -e "s/^user[[:blank:]].*;\$/user $user_name $group_name;/" /etc/nginx/nginx.conf
-fi
-
+# start it
 exec nginx -g "daemon off;"
