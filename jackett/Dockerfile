@@ -12,4 +12,4 @@ EXPOSE 9117 9118
 
 ADD services.conf /etc/supervisor/conf.d/
 ADD my_init /
-CMD exec /my_init
+CMD ["/my_init"]

@@ -11,4 +11,4 @@ EXPOSE 6789
 
 ADD services.ini /etc/supervisor.d/
 ADD my_init /
-CMD exec /my_init
+CMD ["/my_init"]
