@@ -2,6 +2,8 @@
 
 Docker image for [Deluge](http://deluge-torrent.org).
 
+Default password for webui: `deluge`
+
 ## Environment variables
 
 * `PUID` - UID of the process (default: 1000)
