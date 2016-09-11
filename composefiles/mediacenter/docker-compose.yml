@@ -1,0 +1,146 @@
+version: '2'
+
+services:
+    deluge:
+        image: oblique/deluge
+        network_mode: bridge
+        ports:
+            - 8112:8112 # web ui
+            - 58846:58846 # daemon
+            - 59912:59912 # incoming
+            - 59912:59912/udp # incoming
+            - 59922:59922 # outgoing
+            - 59922:59922/udp # outgoing
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /mnt/data/docker/deluge:/config
+            - /mnt/data/media:/data
+        environment:
+            PUID: ${PUID}
+            PGID: ${PGID}
+            VIRTUAL_HOST: d.${TOP_DOMAIN}
+            VIRTUAL_PORT: 8112
+            LETSENCRYPT_HOST: d.${TOP_DOMAIN}
+            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    nzbget:
+        image: oblique/nzbget
+        network_mode: bridge
+        ports:
+            - 6789:6789
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /mnt/data/docker/nzbget:/config
+            - /mnt/data/media:/data
+        environment:
+            PUID: ${PUID}
+            PGID: ${PGID}
+            VIRTUAL_HOST: n.${TOP_DOMAIN}
+            VIRTUAL_PORT: 6789
+            LETSENCRYPT_HOST: n.${TOP_DOMAIN}
+            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    plex:
+        image: oblique/plexpass
+        network_mode: bridge
+        hostname: ${HOSTNAME}
+        ports:
+            - 32400:32400
+            - 32469:32469
+            - 1900:1900/udp
+            - 32410:32410/udp
+            - 32412:32412/udp
+            - 32413:32413/udp
+            - 32414:32414/udp
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /mnt/data/docker/plex:/config
+            - /mnt/data/media:/data
+        environment:
+            PUID: ${PUID}
+            PGID: ${PUID}
+            VIRTUAL_HOST: p.${TOP_DOMAIN}
+            VIRTUAL_PORT: 32400
+            LETSENCRYPT_HOST: p.${TOP_DOMAIN}
+            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    jackett:
+        image: oblique/jackett
+        network_mode: bridge
+        ports:
+            - 9117:9117
+            - 9118:9118
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /mnt/data/docker/jackett:/config
+        environment:
+            PUID: ${PUID}
+            PGID: ${PGID}
+    sonarr:
+        image: oblique/sonarr
+        network_mode: bridge
+        ports:
+            - 8989:8989
+        links:
+            - jackett
+            - deluge
+            - nzbget
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /mnt/data/docker/sonarr:/config
+            - /mnt/data/media:/data
+        environment:
+            PUID: ${PUID}
+            PGID: ${PGID}
+            VIRTUAL_HOST: s.${TOP_DOMAIN}
+            VIRTUAL_PORT: 8989
+            LETSENCRYPT_HOST: s.${TOP_DOMAIN}
+            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    couchpotato:
+        image: oblique/couchpotato
+        network_mode: bridge
+        ports:
+            - 5050:5050
+        links:
+            - jackett
+            - deluge
+            - nzbget
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /mnt/data/docker/couchpotato:/config
+            - /mnt/data/media:/data
+        environment:
+            PUID: ${PUID}
+            PGID: ${PGID}
+            VIRTUAL_HOST: c.${TOP_DOMAIN}
+            VIRTUAL_PORT: 5050
+            LETSENCRYPT_HOST: c.${TOP_DOMAIN}
+            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    headphones:
+        image: oblique/headphones
+        network_mode: bridge
+        ports:
+            - 8181:8181
+        links:
+            - jackett
+            - deluge
+            - nzbget
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /mnt/data/docker/headphones:/config
+            - /mnt/data/media:/data
+        environment:
+            PUID: ${PUID}
+            PGID: ${PGID}
+            VIRTUAL_HOST: h.${TOP_DOMAIN}
+            VIRTUAL_PORT: 8181
+            LETSENCRYPT_HOST: h.${TOP_DOMAIN}
+            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    subliminal-auto:
+        image: oblique/subliminal-auto
+        network_mode: bridge
+        volumes:
+            - /mnt/data/media/movies:/movies
+            - /mnt/data/media/series:/series
+        environment:
+            PUID: ${PUID}
+            PGID: ${PGID}
+            WATCH_DIRS: /movies:/series
+            LANGS: en,el
