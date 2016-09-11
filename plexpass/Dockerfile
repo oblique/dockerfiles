@@ -8,7 +8,6 @@ RUN pacman --noconfirm -Syyu && \
     rm -rf /var/cache/pacman/pkg/* && \
     rm -rf /home/aur/.cache/pacaur
 
-
 RUN useradd -m -s /bin/sh user && \
     passwd -d user
 

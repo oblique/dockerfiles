@@ -11,8 +11,8 @@ Docker image for [Deluge](http://deluge-torrent.org).
 
 * `8112` TCP - Deluge Web UI
 * `58846` TCP - Deluge daemon
-* `58123` TCP and `58123` UDP - Example of port for incoming data (you need to specify it in the webui)
-* `58124` TCP and `58124` UDP - Example of port for outgoing data (you need to specify it in the webui)
+* `58123` TCP and `58123` UDP - Example of port for incoming data (you must define it in the webui)
+* `58124` TCP and `58124` UDP - Example of port for outgoing data (you must define it in the webui)
 
 ## Usage
 
