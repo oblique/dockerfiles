@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# set defaults
+PUID=${PUID:-1000}
+PGID=${PGID:-1000}
+
+if [ ! -e /config/config.ini ]; then
+    echo '[General]' > /config/config.ini
+    echo 'http_host = 0.0.0.0' >> /config/config.ini
+fi
+
+# fix permissions
+usermod -o -u $PUID user
+groupmod -o -g $PGID user
+chown -R $PUID:$PGID /config
+
+# start it
+exec supervisord -c /etc/supervisord.conf -n
