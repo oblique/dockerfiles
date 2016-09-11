@@ -9,11 +9,11 @@ RUN pacman --noconfirm -Syyu && \
     chown -R aur:aur /build && \
     cd /build && \
     sudo -u aur gpg --recv-key 487EACC08557AD082088DABA1EB2638FF56C0C53 && \
-    sudo -u aur git clone https://aur.archlinux.org/cower.git && \
+    sudo -u aur git clone --depth 1 https://aur.archlinux.org/cower.git && \
     cd cower && \
     sudo -u aur makepkg --noconfirm -si && \
     cd .. && \
-    sudo -u aur git clone https://aur.archlinux.org/pacaur.git && \
+    sudo -u aur git clone --depth 1 https://aur.archlinux.org/pacaur.git && \
     cd pacaur && \
     sudo -u aur makepkg --noconfirm -si && \
     pacman --noconfirm -Scc && \
