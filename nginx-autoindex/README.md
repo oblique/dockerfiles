@@ -1,6 +1,6 @@
 ## Image
 
-Docker image for [NGINX](https://www.nginx.com) with autoindex enabled.
+Docker image of [NGINX](https://www.nginx.com) with autoindex enabled.
 
 ## Environment variables
 

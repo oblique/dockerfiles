@@ -1,6 +1,6 @@
 ## Image
 
-Docker image for [Deluge](http://deluge-torrent.org).
+Docker image of [Deluge](http://deluge-torrent.org).
 
 Default password for webui: `deluge`
 

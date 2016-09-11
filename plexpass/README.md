@@ -1,6 +1,6 @@
 ## Image
 
-Docker image for [Plex Media Server](https://plex.tv).
+Docker image of [Plex Media Server](https://plex.tv).
 
 ## Environment variables
 

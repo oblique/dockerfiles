@@ -1,6 +1,6 @@
 ## Image
 
-Docker image for [Sonarr](https://sonarr.tv).
+Docker image of [Sonarr](https://sonarr.tv).
 
 ## Environment variables
 

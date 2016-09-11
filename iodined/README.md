@@ -1,6 +1,6 @@
 ## Image
 
-Docker image for [iodine](http://code.kryo.se/iodine/) server.
+Docker image of [iodine](http://code.kryo.se/iodine/) server.
 
 ## Environment variables
 

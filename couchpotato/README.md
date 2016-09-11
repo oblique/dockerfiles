@@ -1,6 +1,6 @@
 ## Image
 
-Docker image for [couchpotato](https://github.com/CouchPotato/CouchPotatoServer).
+Docker image of [couchpotato](https://github.com/CouchPotato/CouchPotatoServer).
 
 ## Environment variables
 

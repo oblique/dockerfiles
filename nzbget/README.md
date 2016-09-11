@@ -1,6 +1,6 @@
 ## Image
 
-Docker image for [NZBGet](http://nzbget.net)
+Docker image of [NZBGet](http://nzbget.net)
 
 ## Environment variables
 
