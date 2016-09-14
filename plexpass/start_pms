@@ -1,19 +1,15 @@
 #!/bin/sh
 
-# clear previous tmp dir
-rm -rf /config/tmp
-mkdir -p /config/tmp
-
-# env
-set -a
-source /etc/conf.d/plexmediaserver
-set +a
 export HOME=/config
-export TMPDIR="$HOME/tmp"
+export TMPDIR=/tmp
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+
+. /etc/default/plexmediaserver
 export PLEX_MEDIA_SERVER_USER=user
+export PLEX_MEDIA_SERVER_HOME=/usr/lib/plexmediaserver
+export LD_LIBRARY_PATH="$PLEX_MEDIA_SERVER_HOME"
 export PLEX_MEDIA_SERVER_TMPDIR="$TMPDIR"
 export PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR="$HOME"
 
-exec "/opt/plexmediaserver/Plex Media Server"
+exec "$PLEX_MEDIA_SERVER_HOME/Plex Media Server"
