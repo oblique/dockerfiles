@@ -144,3 +144,4 @@ services:
             PGID: ${PGID}
             WATCH_DIRS: /movies:/series
             LANGS: en,el
+            PROVIDERS: addic7ed,opensubtitles,podnapisi,thesubdb,tvsubtitles
