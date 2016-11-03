@@ -11,6 +11,7 @@ from watchdog.events import FileSystemEventHandler
 watch_dirs = os.environ.get('WATCH_DIRS')
 langs = os.environ.get('LANGS')
 ext = os.environ.get('EXT')
+providers = os.environ.get('PROVIDERS')
 addic7ed_user = os.environ.get('ADDIC7ED_USER')
 addic7ed_pass = os.environ.get('ADDIC7ED_PASS')
 legendastv_user = os.environ.get('LEGENDASTV_USER')
@@ -34,7 +35,10 @@ if not ext:
 watch_dirs = watch_dirs.split(':')
 langs = langs.split(',')
 ext = ['.' + x.lower() for x in ext.split(',')]
-
+if providers:
+    providers = providers.split(',')
+else:
+    providers = []
 
 def is_video_file(path):
     if os.path.isdir(path):
@@ -61,6 +65,8 @@ def download_subs(path):
     cmd += ['download', '-v']
     for x in langs:
         cmd += ['-l', x]
+    for x in providers:
+        cmd += ['-p', x]
     cmd.append(path)
 
     subprocess.run(cmd)
