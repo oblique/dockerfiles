@@ -2,7 +2,7 @@ FROM debian:jessie
 
 RUN apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get -y install curl supervisor jq && \
+    apt-get -y install locales-all curl supervisor jq && \
     mkdir /build && \
     cd /build && \
     ver=$(curl -L 'https://plex.tv/api/downloads/1.json?channel=plexpass' | jq -r .computer.Linux.version) && \
