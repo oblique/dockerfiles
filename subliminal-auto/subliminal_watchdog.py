@@ -3,73 +3,92 @@ import os
 import time
 import glob
 import shutil
-import subprocess
+import threading
+from datetime import timedelta, datetime
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from babelfish import *
+from subliminal import *
+import enzyme
 
 
-watch_dirs = os.environ.get('WATCH_DIRS')
-langs = os.environ.get('LANGS')
-ext = os.environ.get('EXT')
+watch_dirs = set((os.environ.get('WATCH_DIRS') or '/data').split(':'))
+langs = set((os.environ.get('LANGS') or 'en').split(','))
+
 providers = os.environ.get('PROVIDERS')
-addic7ed_user = os.environ.get('ADDIC7ED_USER')
-addic7ed_pass = os.environ.get('ADDIC7ED_PASS')
-legendastv_user = os.environ.get('LEGENDASTV_USER')
-legendastv_pass = os.environ.get('LEGENDASTV_PASS')
-opensubtitles_user = os.environ.get('OPENSUBTITLES_USER')
-opensubtitles_pass = os.environ.get('OPENSUBTITLES_PASS')
-subscenter_user = os.environ.get('SUBSCENTER_USER')
-subscenter_pass = os.environ.get('SUBSCENTER_PASS')
-
-if not watch_dirs:
-    print('WATCH_DIRS is mandatory')
-    exit(1)
-
-if not langs:
-    print('LANGS is mandatory')
-    exit(1)
-
-if not ext:
-    ext = 'mkv,mp4,m4v,avi,mpg,mpeg,wmv,webm,mov'
-
-watch_dirs = watch_dirs.split(':')
-langs = langs.split(',')
-ext = ['.' + x.lower() for x in ext.split(',')]
 if providers:
-    providers = providers.split(',')
-else:
-    providers = []
+    providers = set(providers.split(','))
+
+provider_configs = {}
+for x in ['addic7ed', 'legendastv', 'opensubtitles', 'subscenter']:
+    user = os.environ.get(x.upper() + '_USER')
+    passwd = os.environ.get(x.upper() + '_PASS')
+    if user and passwd:
+        provider_configs[x] = {'username' : user, 'password': passwd}
+if len(provider_configs) == 0:
+    provider_configs = None
+
 
 def is_video_file(path):
-    if os.path.isdir(path):
-        return False
-    e = os.path.splitext(path.lower())[1]
-    return e in ext
+    return os.path.isfile(path) and path.endswith(VIDEO_EXTENSIONS)
+
+
+def is_valid_mkv(path):
+    with open(path, 'rb') as f:
+        try:
+            enzyme.MKV(f)
+            return True
+        except enzyme.exceptions.MalformedMKVError:
+            return False
 
 
 def download_subs(path):
     if not is_video_file(path):
         return
+    t = threading.Thread(target=_download_subs, args=[path])
+    t.start()
 
-    cmd = ['subliminal', '--cache-dir', '/cache']
 
-    if addic7ed_user and addic7ed_pass:
-        cmd += ['--addic7ed', addic7ed_user, addic7ed_pass]
-    if legendastv_user and legendastv_pass:
-        cmd += ['--legendastv', legendastv_user, legendastv_pass]
-    if opensubtitles_user and opensubtitles_pass:
-        cmd += ['--opensubtitles', opensubtitles_user, opensubtitles_pass]
-    if subscenter_user and subscenter_pass:
-        cmd += ['--subscenter', subscenter_user, subscenter_pass]
+def _download_subs(path):
+    # wait up to 5 hours for the video to get downloaded
+    print("Waiting for the video to be downloaded [{}]".format(path))
+    t = datetime.now() + timedelta(hours=5)
+    while datetime.now() < t:
+        ext = os.path.splitext(path)[1]
+        if ext.lower() == '.mkv':
+            if is_valid_mkv(path):
+                break
+        elif os.path.getsize(path) > 10485760:
+            break
+        time.sleep(10)
 
-    cmd += ['download', '-v']
-    for x in langs:
-        cmd += ['-l', x]
-    for x in providers:
-        cmd += ['-p', x]
-    cmd.append(path)
+    # if file is less than 10mb, do nothing
+    if os.path.getsize(path) <= 10485760:
+        print("Ingore file because is less than 10mb [{}]".format(path))
+        return
 
-    subprocess.run(cmd)
+    # read video file
+    print("Gathering information [{}]".format(path))
+    video = scan_video(path)
+    refine(video)
+    video.subtitle_languages |= set(core.search_external_subtitles(path).values())
+
+    # if subtitle's language is undefined, then assume that is english
+    if Language('und') in video.subtitle_languages:
+        video.subtitle_languages.remove(Language('und'))
+        video.subtitle_languages |= {Language('eng')}
+
+    # download subtitles
+    print("Download subtitles [{}]".format(path))
+    languages = set(Language.fromietf(x) for x in langs)
+    best_subtitles = download_best_subtitles([video], languages,
+            providers=providers, provider_configs=provider_configs)
+
+    # save subtitles
+    if best_subtitles:
+        save_subtitles(video, best_subtitles[video])
+
+    print("Done [{}]".format(path))
 
 
 def rename_subs(src_path, dest_path):
@@ -94,11 +113,13 @@ class EventHandler(FileSystemEventHandler):
         download_subs(event.dest_path)
 
 
+region.configure('dogpile.cache.memory', expiration_time=timedelta(days=1))
 event_handler = EventHandler()
 observers = []
 
 for x in watch_dirs:
     if not os.path.isdir(x):
+        print("`{}` is not a valid directory".format(x))
         continue
     abspath = os.path.abspath(x)
     print("Watching '{}'".format(abspath))
