@@ -72,10 +72,10 @@ def _download_subs(path):
     video = scan_video(path)
     refine(video)
 
-    # check every 10 minutes for the subtitles. if within 2 days they are not
-    # released then stop.
+    # check every 10 minutes for the subtitles.
+    # stop checking if the video is 2 days old and if we reached the 5th try.
     tries = 0
-    while video.age.days < 2:
+    while tries < 5 or video.age.days < 2:
         tries += 1
         video.subtitle_languages |= set(core.search_external_subtitles(path).values())
 
