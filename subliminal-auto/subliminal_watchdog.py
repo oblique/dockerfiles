@@ -103,10 +103,28 @@ def _download_subs(path):
         if not video.exists:
             break
 
+        # calculate the minimum score we want
+        min_score = 0
+        scores = get_scores(video)
+
+        for x in ['series', 'title', 'year', 'season', 'episode']:
+            if x in scores:
+                min_score += scores[x]
+
+        # we are more strict if this is the 1st try or the 1st day
+        if tries == 1 or video.age.days < 1:
+            # if release group is defined in the filename, then use it
+            # otherwise use format
+            if video.release_group:
+                min_score += scores['release_group']
+            elif video.format:
+                min_score += scores['format']
+
         # download subtitles
         print("[{}] Downloading subtitles".format(path))
         best_subtitles = download_best_subtitles([video], languages,
-                providers=providers, provider_configs=provider_configs)
+                min_score=min_score, providers=providers,
+                provider_configs=provider_configs)
 
         # save subtitles
         if best_subtitles:
