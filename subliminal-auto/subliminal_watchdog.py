@@ -51,9 +51,9 @@ def download_subs(path):
 
 def _download_subs(path):
     # wait up to 5 hours for the video to get downloaded
-    print("Waiting for the video to be downloaded [{}]".format(path))
-    t = datetime.now() + timedelta(hours=5)
-    while datetime.now() < t:
+    print("[{}] Waiting for the video to be downloaded".format(path))
+    download_wait_time = datetime.now() + timedelta(hours=5)
+    while datetime.now() < download_wait_time:
         ext = os.path.splitext(path)[1]
         if ext.lower() == '.mkv':
             if is_valid_mkv(path):
@@ -64,31 +64,55 @@ def _download_subs(path):
 
     # if file is less than 10mb, do nothing
     if os.path.getsize(path) <= 10485760:
-        print("Ingore file because is less than 10mb [{}]".format(path))
+        print("[{}] Ingore file because is less than 10mb".format(path))
         return
 
     # read video file
-    print("Gathering information [{}]".format(path))
+    print("[{}] Gathering information".format(path))
     video = scan_video(path)
     refine(video)
-    video.subtitle_languages |= set(core.search_external_subtitles(path).values())
 
-    # if subtitle's language is undefined, then assume that is english
-    if Language('und') in video.subtitle_languages:
-        video.subtitle_languages.remove(Language('und'))
-        video.subtitle_languages |= {Language('eng')}
+    # check every 10 minutes for the subtitles. if within 2 days they are not
+    # released then stop.
+    tries = 0
+    while video.age.days < 2:
+        tries += 1
+        video.subtitle_languages |= set(core.search_external_subtitles(path).values())
 
-    # download subtitles
-    print("Download subtitles [{}]".format(path))
-    languages = set(Language.fromietf(x) for x in langs)
-    best_subtitles = download_best_subtitles([video], languages,
-            providers=providers, provider_configs=provider_configs)
+        # if subtitle's language is undefined, then assume that is english
+        if Language('und') in video.subtitle_languages:
+            video.subtitle_languages.remove(Language('und'))
+            video.subtitle_languages |= {Language('eng')}
 
-    # save subtitles
-    if best_subtitles:
-        save_subtitles(video, best_subtitles[video])
+        print("[{}] Existing languages: {}".format(path,
+            ', '.join(str(x) for x in video.subtitle_languages)))
 
-    print("Done [{}]".format(path))
+        languages = set(Language.fromietf(x) for x in langs)
+        languages -= video.subtitle_languages
+        if not languages:
+            break
+
+        print("[{}] Need languages: {}".format(path,
+            ', '.join(str(x) for x in languages)))
+
+        # sleep for 10 minutes but not if this is the first 2 tries
+        if tries > 2:
+            time.sleep(10 * 60)
+
+        # if file got deleted while we were sleeping, then stop
+        if not video.exists:
+            break
+
+        # download subtitles
+        print("[{}] Downloading subtitles".format(path))
+        best_subtitles = download_best_subtitles([video], languages,
+                providers=providers, provider_configs=provider_configs)
+
+        # save subtitles
+        if best_subtitles:
+            save_subtitles(video, best_subtitles[video])
+
+    print("[{}] Done".format(path))
 
 
 def rename_subs(src_path, dest_path):
