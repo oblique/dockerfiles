@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine
 
 RUN apk add --no-cache python3 ca-certificates shadow supervisor && \
     pip3 --no-cache-dir install subliminal watchdog && \
