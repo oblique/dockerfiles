@@ -9,7 +9,7 @@ connections are blocked to avoid any leaks.
 * `COUNTRY` - Specify the name of the country. (e.x. `us`, `de`, `gb`)
 * `SERVER` - Specify the name of the server. This overrides `COUNTRY`.
 * `MODE` - Specify the type of connection.
-* `INSECURE_STUNNEL` - Disables certificate verification for `stunnel`. This is needed if you are behind a firewall that monitors SSL.
+* `INSECURE_STUNNEL` - Disables certificate verification for `stunnel`. This is needed if you are behind a firewall that monitors SSL. (default: false)
 
 ## Mode format
 
@@ -50,7 +50,7 @@ docker run -d \
     -v /your_airvpn_configs:/airvpn \
     -e COUNTRY=se \
     -e MODE=ssl \
-    -e INSECURE_STUNNEL \
+    -e INSECURE_STUNNEL=true \
     oblique/airvpn
 ```
 

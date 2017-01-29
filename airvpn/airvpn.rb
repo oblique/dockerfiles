@@ -19,6 +19,11 @@ def parse_mode(mode)
   { protocol: protocol, port: port, altentry: altentry }
 end
 
+def parse_bool(bool)
+  bool = bool.downcase.strip if bool.is_a? String
+  ['y', 'yes', 't', 'true', '1', 1, true].include? bool
+end
+
 def all_config_files
   configs = []
 
@@ -119,13 +124,20 @@ unless File.exist?('/dev/net/tun')
 end
 
 mode = ENV['MODE'] || 'auto'
-insecure_stunnel = !ENV['INSECURE_STUNNEL'].nil?
+insecure_stunnel = parse_bool(ENV['INSECURE_STUNNEL'])
 country = ENV['COUNTRY']
 server = ENV['SERVER']
 
+puts "Mode: #{mode}" unless mode == 'auto'
+if !server.nil?
+  puts "Server #{server}"
+elsif !country.nil?
+  puts "Country: #{country}"
+end
+
 config = select_config(mode, server, country)
 unless config
-  puts "Can not find config for mode '#{mode}'"
+  print "Can not find config"
   exit 1
 end
 
