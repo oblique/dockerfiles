@@ -32,6 +32,19 @@ udp-53-alt
 udp-53-altentry
 ```
 
+## AirVPN configs
+
+This image is looking for your AirVPN configs in `/airvpn` directory.
+
+The best way to generate the configuration is the following:
+* Go to [AirVPN's Config Generator](https://airvpn.org/generator/).
+* In section 1, select `Linux`.
+* In section 2, scroll down and find `by single servers` subsection and click
+  `Invert selection` to select all the servers.
+* In section 3, select `Advanced Mode` and select all the modes
+* Click `Generate`
+* Download the archive with all the configs and extract them to a folder
+
 ## Usage
 
 ```
