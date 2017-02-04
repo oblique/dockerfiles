@@ -1,8 +1,91 @@
-#!/bin/sh
+#!/bin/bash
+
+is_true() {
+    echo "$1" | grep -iqE '^[[:blank:]]*(y|yes|t|true|1)[[:blank:]]*$'
+}
+
+is_false() {
+    echo "$1" | grep -iqE '^[[:blank:]]*(n|no|f|false|0)[[:blank:]]*$'
+}
+
+to_bool() {
+    if is_true "$1"; then
+        echo True
+    elif is_false "$1"; then
+        echo False
+    fi
+}
 
 # set defaults
 PUID=${PUID:-1000}
 PGID=${PGID:-1000}
+
+# prepare bool variables
+UPNP=$(to_bool "$UPNP")
+NAT_PMP=$(to_bool "$NAT_PMP")
+UTPEX=$(to_bool "$UTPEX")
+LSD=$(to_bool "$LSD")
+DHT=$(to_bool "$DHT")
+UTP=$(to_bool "$UTP")
+
+# update ltconfig
+rm -f /config/plugins/ltConfig-*.egg
+mkdir -p /config/plugins
+cmp -s /opt/ltConfig.egg /config/plugins/ltConfig.egg || \
+    cp /opt/ltConfig.egg /config/plugins/ltConfig.egg
+
+# setup deluge config
+[[ ! -f /config/auth ]] && echo ::10 > /config/auth
+deluged -c /config
+sleep 1
+
+deluge-console -c /config config -s allow_remote True
+deluge-console -c /config plugin -e Label
+deluge-console -c /config plugin -e ltConfig
+
+if [[ -n "$INCOMING_PORT_RANGE" ]]; then
+    port_from=$(echo "$INCOMING_PORT_RANGE" | grep -o '^[0-9]\+-\?' | sed 's/-//')
+    port_until=$(echo "$INCOMING_PORT_RANGE" | grep -o -- '-[0-9]\+$' | sed 's/-//')
+    if [[ -n "$port_from" ]]; then
+        [[ -z "$port_until" ]] && port_until=$port_from
+        deluge-console -c /config config -s random_port False
+        deluge-console config -s listen_ports "(${port_from}, ${port_until})"
+    fi
+fi
+
+if [[ -n "$OUTGOING_PORT_RANGE" ]]; then
+    port_from=$(echo "$OUTGOING_PORT_RANGE" | grep -o '^[0-9]\+-\?' | sed 's/-//')
+    port_until=$(echo "$OUTGOING_PORT_RANGE" | grep -o -- '-[0-9]\+$' | sed 's/-//')
+    if [[ -n "$port_from" ]]; then
+        [[ -z "$port_until" ]] && port_until=$port_from
+        deluge-console -c /config config -s random_outgoing_port False
+        deluge-console config -s outgoing_ports "(${port_from}, ${port_until})"
+    fi
+fi
+
+[[ -n "$UPNP" ]] && deluge-console -c /config config -s upnp "$UPNP"
+[[ -n "$NAT_PMP" ]] && deluge-console -c /config config -s natpmp "$NAT_PMP"
+[[ -n "$UTPEX" ]] && deluge-console -c /config config -s utpex "$UTPEX"
+[[ -n "$LSD" ]] && deluge-console -c /config config -s lsd "$LSD"
+[[ -n "$DHT" ]] && deluge-console -c /config config -s dht "$DHT"
+
+if [[ -n "$UTP" ]]; then
+    python2 <<EOF
+import deluge.configmanager as dc
+dc.set_config_dir('/config')
+c = dc.ConfigManager('ltconfig.conf')
+
+if 'settings' not in c:
+    c['settings'] = {}
+
+c['apply_on_start'] = True
+c['settings']['enable_outgoing_utp'] = $UTP
+c['settings']['enable_incoming_utp'] = $UTP
+c.save()
+EOF
+fi
+
+deluge-console -c /config halt
 
 # fix /config permissions
 usermod -o -u $PUID user

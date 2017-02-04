@@ -1,10 +1,7 @@
 FROM pritunl/archlinux
 
-RUN pacman --noconfirm -Syyu && \
-    pacman --noconfirm -S supervisor deluge python2-mako && \
-    pacman -Qtdq | xargs -r pacman --noconfirm -Rcns && \
-    pacman --noconfirm -Scc && \
-    rm -rf /var/cache/pacman/pkg/*
+ADD install.sh /
+RUN /install.sh && rm -f /install.sh
 
 RUN useradd -m -s /bin/sh user && \
     passwd -d user
