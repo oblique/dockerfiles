@@ -18,6 +18,14 @@ services:
         environment:
             PUID: ${PUID}
             PGID: ${PGID}
+            INCOMING_PORT_RANGE: 59912-59912
+            OUTGOING_PORT_RANGE: 59922-59922
+            UPNP: 'false'
+            NAT_PMP: 'false'
+            UTPEX: 'false'
+            LSD: 'false'
+            DHT: 'false'
+            UTP: 'false'
             VIRTUAL_HOST: d.${TOP_DOMAIN}
             VIRTUAL_PORT: 8112
             LETSENCRYPT_HOST: d.${TOP_DOMAIN}
