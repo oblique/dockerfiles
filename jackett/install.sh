@@ -1,12 +1,7 @@
 #!/bin/bash
 set -e
 
-# use US mirror
-sed -i 's/httpredir/ftp.us/g' /etc/apt/sources.list
-
-apt-get -y update
-apt-get -y upgrade
-apt-get -y install curl libmono-cil-dev supervisor
+pacman --noconfirm -Syyu mono curl supervisor
 
 mkdir -p /build
 cd /build
@@ -25,5 +20,4 @@ tar xvf jackett-public.tar.gz -C /opt
 
 cd /
 rm -rf /build
-apt-get -y clean
-rm -rf /var/lib/apt/lists/*
+yes | pacman -Scc

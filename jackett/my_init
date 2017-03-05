@@ -9,5 +9,9 @@ usermod -o -u $PUID user
 groupmod -o -g $PGID user
 chown -R $PUID:$PGID /config
 
+# fix environment variables
+export USER=user
+export HOME=/config
+
 # start it
-exec supervisord -c /etc/supervisor/supervisord.conf -n
+exec supervisord -c /etc/supervisord.conf -n
