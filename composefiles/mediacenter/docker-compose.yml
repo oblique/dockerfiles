@@ -101,6 +101,26 @@ services:
             VIRTUAL_PORT: 8989
             LETSENCRYPT_HOST: s.${TOP_DOMAIN}
             LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+    radarr:
+        image: oblique/radarr
+        network_mode: bridge
+        ports:
+            - 7878:7878
+        links:
+            - jackett
+            - deluge
+            - nzbget
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /mnt/data/docker/radarr:/config
+            - /mnt/data/media:/data
+        environment:
+            PUID: ${PUID}
+            PGID: ${PGID}
+            VIRTUAL_HOST: r.${TOP_DOMAIN}
+            VIRTUAL_PORT: 7878
+            LETSENCRYPT_HOST: r.${TOP_DOMAIN}
+            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
     couchpotato:
         image: oblique/couchpotato
         network_mode: bridge
