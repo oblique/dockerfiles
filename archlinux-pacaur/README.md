@@ -20,7 +20,6 @@ Cleanup:
 
 ```
 pacman -Qtdq | xargs -r pacman --noconfirm -Rcns
-pacman --noconfirm -Scc
-rm -rf /var/cache/pacman/pkg/*
+yes | pacman -Scc
 rm -rf /home/aur/.cache/pacaur
 ```
