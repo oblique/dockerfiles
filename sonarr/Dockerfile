@@ -4,8 +4,7 @@ RUN pacman --noconfirm -Syyu && \
     pacman --noconfirm -S supervisor && \
     sudo -u aur pacaur --noconfirm --noedit -S sonarr && \
     pacman -Qtdq | xargs -r pacman --noconfirm -Rcns && \
-    pacman --noconfirm -Scc && \
-    rm -rf /var/cache/pacman/pkg/* && \
+    yes | pacman -Scc && \
     rm -rf /home/aur/.cache/pacaur
 
 RUN useradd -m -s /bin/sh user && \
