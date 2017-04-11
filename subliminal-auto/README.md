@@ -1,3 +1,5 @@
+**NOTE: I'm not going to maintain this anymore because I switched to [Sub-Zero](https://github.com/pannal/Sub-Zero.bundle) plugin of Plex**
+
 ## Image
 
 This image watch directories of your choice for new videos. If video is
