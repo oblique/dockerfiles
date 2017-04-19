@@ -9,16 +9,15 @@ services:
             - 443:443
         volumes:
             - /var/run/docker.sock:/tmp/docker.sock:ro
-            - /root/docker/nginx-proxy/certs:/etc/nginx/certs:ro
+            - /root/docker/letsencrypt-nsupdate/certs:/etc/nginx/certs:ro
             - /root/docker/nginx-proxy/htpasswd:/etc/nginx/htpasswd:ro
-            - /etc/nginx/vhost.d
-            - /usr/share/nginx/html
     letsencrypt:
-        image: jrcs/letsencrypt-nginx-proxy-companion
+        image: oblique/letsencrypt-nsupdate
         network_mode: bridge
-        volumes_from:
-            - nginx-proxy
         volumes:
-            - /var/run/docker.sock:/var/run/docker.sock:ro
-            - /root/docker/nginx-proxy/certs:/etc/nginx/certs:rw
-            - /root/docker/nginx-proxy/htpasswd:/etc/nginx/htpasswd:rw
+            - /root/docker/letsencrypt-nsupdate:/config
+        environment:
+            KEY_PATH: ${NSUPDATE_KEY_PATH}
+            DNSSERVER: ${DNSSERVER}
+            ZONE: ${ZONE}
+            CONTACT_EMAIL: ${LETSENCRYPT_EMAIL}

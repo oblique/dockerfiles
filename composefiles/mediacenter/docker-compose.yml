@@ -26,10 +26,8 @@ services:
             LSD: 'false'
             DHT: 'false'
             UTP: 'false'
-            VIRTUAL_HOST: d.${TOP_DOMAIN}
+            VIRTUAL_HOST: d.mc.${TOP_DOMAIN}
             VIRTUAL_PORT: 8112
-            LETSENCRYPT_HOST: d.${TOP_DOMAIN}
-            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
     nzbget:
         image: oblique/nzbget
         network_mode: bridge
@@ -42,10 +40,8 @@ services:
         environment:
             PUID: ${PUID}
             PGID: ${PGID}
-            VIRTUAL_HOST: n.${TOP_DOMAIN}
+            VIRTUAL_HOST: n.mc.${TOP_DOMAIN}
             VIRTUAL_PORT: 6789
-            LETSENCRYPT_HOST: n.${TOP_DOMAIN}
-            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
     plex:
         image: oblique/plexpass
         network_mode: bridge
@@ -65,10 +61,8 @@ services:
         environment:
             PUID: ${PUID}
             PGID: ${PUID}
-            VIRTUAL_HOST: p.${TOP_DOMAIN}
+            VIRTUAL_HOST: p.mc.${TOP_DOMAIN}
             VIRTUAL_PORT: 32400
-            LETSENCRYPT_HOST: p.${TOP_DOMAIN}
-            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
     jackett:
         image: oblique/jackett
         network_mode: bridge
@@ -97,10 +91,8 @@ services:
         environment:
             PUID: ${PUID}
             PGID: ${PGID}
-            VIRTUAL_HOST: s.${TOP_DOMAIN}
+            VIRTUAL_HOST: s.mc.${TOP_DOMAIN}
             VIRTUAL_PORT: 8989
-            LETSENCRYPT_HOST: s.${TOP_DOMAIN}
-            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
     radarr:
         image: oblique/radarr
         network_mode: bridge
@@ -117,7 +109,5 @@ services:
         environment:
             PUID: ${PUID}
             PGID: ${PGID}
-            VIRTUAL_HOST: r.${TOP_DOMAIN}
+            VIRTUAL_HOST: r.mc.${TOP_DOMAIN}
             VIRTUAL_PORT: 7878
-            LETSENCRYPT_HOST: r.${TOP_DOMAIN}
-            LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
