@@ -1,0 +1,21 @@
+#!/bin/bash
+
+die() {
+    echo "$@"
+    exit 1
+}
+
+[[ -z "$KEY_PATH" ]] && die "KEY_PATH must be defined"
+[[ -z "$DNSSERVER" ]] && die "DNSSERVER must be defined"
+[[ -z "$ZONE" ]] && die "ZONE must be defined"
+[[ -n "$CONTACT_EMAIL" ]] && echo "CONTACT_EMAIL=$CONTACT_EMAIL" >> /etc/dehydrated/config
+
+trap "exit 0" SIGINT
+
+# trigger certificates renewal every 1 hour.
+# dehydrated will skip the certificates that are less than 30 days old.
+while :; do
+    renew_certs
+    sleep 60m &
+    wait $!
+done

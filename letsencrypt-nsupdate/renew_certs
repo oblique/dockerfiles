@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+
+args=()
+[[ "$1" == '-f' ]] && args+=('--force')
+
+/opt/dehydrated/dehydrated --register --accept-terms
+/opt/dehydrated/dehydrated -c "${args[@]}"
