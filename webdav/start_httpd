@@ -5,9 +5,9 @@ is_true() {
 }
 
 add_var() {
-    echo -n "Define '$1'" >> /tmp/httpd-def-vars.conf
-    [[ -n "$2" ]] && echo -n " '$2'" >> /tmp/httpd-def-vars.conf
-    echo >> /tmp/httpd-def-vars.conf
+    echo -n "Define '$1'" >> /tmp/httpd-vars.conf
+    [[ -n "$2" ]] && echo -n " '$2'" >> /tmp/httpd-vars.conf
+    echo >> /tmp/httpd-vars.conf
 }
 
 rm -f /tmp/httpd-vars.conf
