@@ -4,9 +4,14 @@ is_true() {
     echo "$1" | grep -iqE '^[[:blank:]]*(y|yes|t|true|1)[[:blank:]]*$'
 }
 
+# fix permissions
+mkdir -p /etc/httpd/var /etc/httpd/logs /run/httpd
+chown -R http:http /etc/httpd/var /etc/httpd/logs /run/httpd
+
+# set variables
 USE_SSL=${USE_SSL:-false}
 ONLY_SSL=${ONLY_SSL:-false}
-HTPASSWD_PATH="${HTPASSWD_PATH:-/config/.htpasswd}"
+HTPASSWD_PATH="${HTPASSWD_PATH:-/config/htpasswd}"
 DHPARAM_PATH="${DHPARAM_PATH:-/config/dhparam.pem}"
 CERT_PATH="${CERT_PATH:-/config/cert.pem}"
 KEY_PATH="${KEY_PATH:-/config/key.pem}"
@@ -26,4 +31,5 @@ unset DHPARAM_PATH
 unset CERT_PATH
 unset KEY_PATH
 
+# start server
 exec httpd -k start -DFOREGROUND "${extra_args[@]}"
