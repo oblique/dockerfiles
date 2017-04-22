@@ -11,10 +11,13 @@ services:
             - /var/run/docker.sock:/tmp/docker.sock:ro
             - /root/docker/letsencrypt-nsupdate/certs:/etc/nginx/certs:ro
             - /root/docker/nginx-proxy/htpasswd:/etc/nginx/htpasswd:ro
+        environment:
+            RUN_AFTER_CERT_UPDATE: nginx -s reload
     letsencrypt:
         image: oblique/letsencrypt-nsupdate
         network_mode: bridge
         volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
             - /root/docker/letsencrypt-nsupdate:/config
         environment:
             KEY_PATH: ${NSUPDATE_KEY_PATH}

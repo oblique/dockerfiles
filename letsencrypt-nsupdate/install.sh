@@ -6,7 +6,7 @@ github_latest_release() {
         grep -m1 tag_name | sed 's|.*"tag_name": "v\([^"]\+\).*|\1|'
 }
 
-apk add --no-cache bash curl openssl bind-tools
+apk add --no-cache bash curl openssl bind-tools docker
 
 mkdir -p /opt
 cd /opt

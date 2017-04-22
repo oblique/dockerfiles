@@ -7,7 +7,7 @@ source /etc/dehydrated/config
 TTL=${TTL:-300}
 
 case "$1" in
-    "deploy_challenge")
+    deploy_challenge)
         cat << EOF | nsupdate -k $KEY_PATH
 server $DNSSERVER
 zone $ZONE
@@ -17,7 +17,7 @@ send
 quit
 EOF
         ;;
-    "clean_challenge")
+    clean_challenge)
         cat << EOF | nsupdate -k $KEY_PATH
 server $DNSSERVER
 zone $ZONE
@@ -26,7 +26,7 @@ send
 quit
 EOF
         ;;
-    "deploy_cert")
+    deploy_cert)
         cd "$CERTDIR"
 
         main_domain=$2
@@ -60,20 +60,30 @@ EOF
                 ln -s $main_domain/dhparam.pem $x.dhparam.pem
             done
         fi
+
+        # indicate that a certificate got deployed. this is needed by 'exit_hook'
+        touch /tmp/deployed
         ;;
-    "unchanged_cert")
+    unchanged_cert)
         # do nothing
         ;;
-    "invalid_challenge")
+    invalid_challenge)
         echo "Invalid challenge"
         exit 1
         ;;
-    "request_failure")
+    request_failure)
         echo "Request failure"
         exit 1
         ;;
-    "exit_hook")
-        # do nothing
+    exit_hook)
+        if [[ -f /tmp/deployed ]]; then
+            for id in $(docker ps -q --no-trunc); do
+                docker inspect -f '{{range $i, $v := .Config.Env}}{{println $v}}{{end}}' $id | \
+                    awk '/^RUN_AFTER_CERT_UPDATE=/ { sub("RUN_AFTER_CERT_UPDATE=", ""); print }' | \
+                    xargs -0 -I '{}' -r docker exec $id bash -c '{}'
+            done
+            rm -f /tmp/deployed
+        fi
         ;;
     *)
         echo Unknown hook "${1}"
