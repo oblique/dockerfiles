@@ -4,6 +4,15 @@ is_true() {
     echo "$1" | grep -iqE '^[[:blank:]]*(y|yes|t|true|1)[[:blank:]]*$'
 }
 
+add_var() {
+    echo -n "Define '$1'" >> /tmp/httpd-def-vars.conf
+    [[ -n "$2" ]] && echo -n " '$2'" >> /tmp/httpd-def-vars.conf
+    echo >> /tmp/httpd-def-vars.conf
+}
+
+rm -f /tmp/httpd-vars.conf
+touch /tmp/httpd-vars.conf
+
 # fix permissions
 mkdir -p /etc/httpd/var /etc/httpd/logs /run/httpd
 chown -R http:http /etc/httpd/var /etc/httpd/logs /run/httpd
@@ -16,13 +25,13 @@ DHPARAM_PATH="${DHPARAM_PATH:-/config/dhparam.pem}"
 CERT_PATH="${CERT_PATH:-/config/cert.pem}"
 KEY_PATH="${KEY_PATH:-/config/key.pem}"
 
-extra_args=()
-is_true "$USE_SSL" && extra_args+=("-DUSE_SSL")
-is_true "$ONLY_SSL" && extra_args+=("-DONLY_SSL")
-[[ -f "$HTPASSWD_PATH" ]] && extra_args+=("-DHTPASSWD_PATH=$HTPASSWD_PATH")
-[[ -f "$DHPARAM_PATH" ]] && extra_args+=("-DDHPARAM_PATH=$DHPARAM_PATH")
-[[ -f "$CERT_PATH" ]] && extra_args+=("-DCERT_PATH=$CERT_PATH")
-[[ -f "$KEY_PATH" ]] && extra_args+=("-DKEY_PATH=$KEY_PATH")
+add_var FOREGROUND
+is_true "$USE_SSL" && add_var USE_SSL
+is_true "$ONLY_SSL" && add_var ONLY_SSL
+[[ -f "$HTPASSWD_PATH" ]] && add_var HTPASSWD_PATH "$HTPASSWD_PATH"
+[[ -f "$DHPARAM_PATH" ]] && add_var DHPARAM_PATH "$DHPARAM_PATH"
+[[ -f "$CERT_PATH" ]] && add_var CERT_PATH "$CERT_PATH"
+[[ -f "$KEY_PATH" ]] && add_var KEY_PATH "$KEY_PATH"
 
 unset USE_SSL
 unset ONLY_SSL
@@ -32,4 +41,4 @@ unset CERT_PATH
 unset KEY_PATH
 
 # start server
-exec httpd -k start -DFOREGROUND "${extra_args[@]}"
+exec httpd -k start
