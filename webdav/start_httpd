@@ -25,25 +25,43 @@ is_dir_empty /data && chown http:http /data
 # set variables
 USE_SSL=${USE_SSL:-false}
 ONLY_SSL=${ONLY_SSL:-false}
-HTPASSWD_PATH="${HTPASSWD_PATH:-/config/htpasswd}"
-DHPARAM_PATH="${DHPARAM_PATH:-/config/dhparam.pem}"
-CERT_PATH="${CERT_PATH:-/config/cert.pem}"
-KEY_PATH="${KEY_PATH:-/config/key.pem}"
+is_true "$ONLY_SSL" && USE_SSL=true
+
+if [[ -z "$HTPASSWD_PATH" ]]; then
+    if [[ -n "$USER" && -n "$PASSWORD" ]]; then
+        HTPASSWD_PATH="/tmp/htpasswd"
+        htpasswd -B -c -b "$HTPASSWD_PATH" "$USER" "$PASSWORD"
+    elif [[ -f /config/htpasswd ]]; then
+        HTPASSWD_PATH=/config/htpasswd
+    fi
+fi
+
+if is_true "$USE_SSL"; then
+    CERT_PATH="${CERT_PATH:-/config/cert.pem}"
+    KEY_PATH="${KEY_PATH:-/config/key.pem}"
+    # generate dhparam.pem if needed
+    if [[ -z "$DHPARAM_PATH" ]]; then
+        [[ -f /config/dhparam.pem ]] || openssl dhparam -out /config/dhparam.pem 2048
+        DHPARAM_PATH="/config/dhparam.pem"
+    fi
+fi
 
 add_var FOREGROUND
 is_true "$USE_SSL" && add_var USE_SSL
 is_true "$ONLY_SSL" && add_var ONLY_SSL
-[[ -f "$HTPASSWD_PATH" ]] && add_var HTPASSWD_PATH "$HTPASSWD_PATH"
-[[ -f "$DHPARAM_PATH" ]] && add_var DHPARAM_PATH "$DHPARAM_PATH"
-[[ -f "$CERT_PATH" ]] && add_var CERT_PATH "$CERT_PATH"
-[[ -f "$KEY_PATH" ]] && add_var KEY_PATH "$KEY_PATH"
+[[ -n "$HTPASSWD_PATH" ]] && add_var HTPASSWD_PATH "$HTPASSWD_PATH"
+[[ -n "$DHPARAM_PATH" ]] && add_var DHPARAM_PATH "$DHPARAM_PATH"
+[[ -n "$CERT_PATH" ]] && add_var CERT_PATH "$CERT_PATH"
+[[ -n "$KEY_PATH" ]] && add_var KEY_PATH "$KEY_PATH"
 
+unset USER
+unset PASSWORD
+unset HTPASSWD_PATH
 unset USE_SSL
 unset ONLY_SSL
-unset HTPASSWD_PATH
-unset DHPARAM_PATH
 unset CERT_PATH
 unset KEY_PATH
+unset DHPARAM_PATH
 
 # start server
 exec httpd -k start
