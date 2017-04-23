@@ -28,7 +28,7 @@ ONLY_SSL=${ONLY_SSL:-false}
 is_true "$ONLY_SSL" && USE_SSL=true
 
 if [[ -z "$HTPASSWD_PATH" ]]; then
-    if [[ -n "$USER" && -n "$PASSWORD" ]]; then
+    if [[ -n "$USER" || -n "$PASSWORD" ]]; then
         HTPASSWD_PATH="/tmp/htpasswd"
         htpasswd -B -c -b "$HTPASSWD_PATH" "$USER" "$PASSWORD"
     elif [[ -f /config/htpasswd ]]; then
