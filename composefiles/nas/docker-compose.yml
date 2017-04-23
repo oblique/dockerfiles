@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+    webdav:
+        image: oblique/webdav
+        network_mode: bridge
+        ports:
+            - 4443:443
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /root/docker/letsencrypt-nsupdate/certs:/certs:ro
+            - /root/docker/webdav:/config
+            - /mnt/data:/data
+        environment:
+            PUID: ${PUID}
+            PGID: ${PGID}
+            ONLY_SSL: 'true'
+            CERT_PATH: /certs/dav.${TOP_DOMAIN}.crt
+            KEY_PATH: /certs/dav.${TOP_DOMAIN}.key
+            DHPARAM_PATH: /certs/dav.${TOP_DOMAIN}.dhparam.pem
+            RUN_AFTER_CERT_UPDATE: apachectl graceful

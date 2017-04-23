@@ -1,0 +1,17 @@
+[Unit]
+Description=NAS
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+Environment=PUID=1000
+Environment=PGID=1000
+Environment=TOP_DOMAIN=example.com
+WorkingDirectory=/root/dockerfiles/composefiles/nas
+ExecStartPre=-/usr/bin/docker-compose down -v --remove-orphans
+ExecStart=/usr/bin/docker-compose up --remove-orphans --force-recreate
+ExecStop=/usr/bin/docker-compose down -v --remove-orphans
+
+[Install]
+WantedBy=multi-user.target
