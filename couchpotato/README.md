@@ -1,3 +1,5 @@
+**NOTE: I'm not going to maintain this anymore because I switched to [Radarr](https://radarr.video)**
+
 ## Image
 
 Docker image of [couchpotato](https://github.com/CouchPotato/CouchPotatoServer).
