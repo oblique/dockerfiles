@@ -1,5 +1,9 @@
 #!/bin/bash
 
+is_dir_empty() {
+    [[ -z "$(ls -A "$1" || echo error)" ]]
+}
+
 is_true() {
     echo "$1" | grep -iqE '^[[:blank:]]*(y|yes|t|true|1)[[:blank:]]*$'
 }
@@ -16,6 +20,7 @@ touch /tmp/httpd-vars.conf
 # fix permissions
 mkdir -p /etc/httpd/var /etc/httpd/logs /run/httpd
 chown -R http:http /etc/httpd/var /etc/httpd/logs /run/httpd
+is_dir_empty /data && chown http:http /data
 
 # set variables
 USE_SSL=${USE_SSL:-false}
