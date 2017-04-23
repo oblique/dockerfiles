@@ -4,7 +4,7 @@ RUN pacman --noconfirm -Syyu && \
     pacman --noconfirm -S supervisor apache && \
     yes | pacman -Scc
 
-VOLUME /data
+VOLUME /data /config
 EXPOSE 80 443
 
 ADD httpd.conf /etc/httpd/conf/
