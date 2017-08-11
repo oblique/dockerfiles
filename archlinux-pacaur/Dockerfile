@@ -3,8 +3,10 @@ FROM pritunl/archlinux
 # Use `/usr/bin/true` as a dummy editor
 ENV EDITOR=true
 
-RUN pacman --noconfirm -Syyu && \
-    pacman --noconfirm -S git sudo binutils make fakeroot gcc && \
+RUN echo '[multilib]' >> /etc/pacman.conf && \
+    echo 'Include = /etc/pacman.d/mirrorlist' >> /etc/pacman.conf && \
+    pacman --noconfirm -Syyu && \
+    pacman --noconfirm -S base-devel git && \
     useradd -m -s /bin/bash aur && \
     passwd -d aur && \
     echo 'aur ALL=(ALL) ALL' > /etc/sudoers.d/aur && \
