@@ -11,6 +11,9 @@ RUN echo '[multilib]' >> /etc/pacman.conf && \
     passwd -d aur && \
     echo 'aur ALL=(ALL) ALL' > /etc/sudoers.d/aur && \
     echo 'Defaults env_keep += "EDITOR"' >> /etc/sudoers.d/aur && \
+    mkdir -p /home/aur/.gnupg && \
+    echo 'standard-resolver' > /home/aur/.gnupg/dirmngr.conf && \
+    chown -R aur:aur /home/aur && \
     mkdir /build && \
     chown -R aur:aur /build && \
     cd /build && \
