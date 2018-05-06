@@ -1,0 +1,24 @@
+#!/bin/bash
+
+space_to_nl() {
+    echo "$*" | tr '[:space:]' '\n'
+}
+
+docker_has_new_containers() {
+    NEW_CON="$(docker ps -q --no-trunc)"
+    diff <(space_to_nl "$OLD_CON") <(space_to_nl "$NEW_CON") | grep -q -E '^>'
+    local ret=$?
+    OLD_CON="$NEW_CON"
+    return $ret
+}
+
+trap "exit 0" SIGINT SIGTERM
+
+while :; do
+    if docker_has_new_containers; then
+        # do not call renew_certs immediately, we may have a multi-container service
+        sleep 5
+        renew_certs
+    fi
+    sleep 1
+done
