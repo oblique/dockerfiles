@@ -1,26 +1,37 @@
-version: '2'
+version: '3.1'
 
 services:
     nginx-proxy:
         image: jwilder/nginx-proxy
-        network_mode: bridge
         ports:
             - 80:80
             - 443:443
         volumes:
             - /var/run/docker.sock:/tmp/docker.sock:ro
-            - /root/docker/letsencrypt-nsupdate/certs:/etc/nginx/certs:ro
             - /root/docker/nginx-proxy/htpasswd:/etc/nginx/htpasswd:ro
+            - certs:/etc/nginx/certs:ro
+            - dhparam:/etc/nginx/dhparam
         environment:
-            RUN_AFTER_CERT_UPDATE: nginx -s reload
+            SSL_POLICY: Mozilla-Modern
+            RELOAD_CERTS_CMD: nginx -s reload
     letsencrypt:
-        image: oblique/letsencrypt-nsupdate
-        network_mode: bridge
+        image: oblique/letsencrypt-route53
         volumes:
-            - /var/run/docker.sock:/var/run/docker.sock:ro
-            - /root/docker/letsencrypt-nsupdate:/config
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+            - certs:/certs
         environment:
-            KEY_PATH: ${NSUPDATE_KEY_PATH}
-            DNSSERVER: ${DNSSERVER}
-            ZONE: ${ZONE}
-            CONTACT_EMAIL: ${LETSENCRYPT_EMAIL}
+            AWS_ACCESS_KEY_ID_FILE: /run/secrets/aws_access_key_id
+            AWS_SECRET_ACCESS_KEY_FILE: /run/secrets/aws_secret_access_key
+        secrets:
+            - aws_access_key_id
+            - aws_secret_access_key
+
+volumes:
+    certs:
+    dhparam:
+
+secrets:
+    aws_access_key_id:
+        file: aws_access_key_id
+    aws_secret_access_key:
+        file: aws_secret_access_key
