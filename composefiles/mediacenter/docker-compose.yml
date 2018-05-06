@@ -1,9 +1,8 @@
-version: '2'
+version: '3.1'
 
 services:
     deluge:
         image: oblique/deluge
-        network_mode: bridge
         ports:
             - 8112:8112 # web ui
             - 58846:58846 # daemon
@@ -11,13 +10,16 @@ services:
             - 59912:59912/udp # incoming
             - 59922:59922 # outgoing
             - 59922:59922/udp # outgoing
+        networks:
+            - default
+            - nginx-proxy_default
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/deluge:/config
             - /mnt/data/media:/data
+        env_file:
+            - user.env
         environment:
-            PUID: ${PUID}
-            PGID: ${PGID}
             INCOMING_PORT_RANGE: 59912-59912
             OUTGOING_PORT_RANGE: 59922-59922
             UPNP: 'false'
@@ -26,26 +28,29 @@ services:
             LSD: 'false'
             DHT: 'false'
             UTP: 'false'
-            VIRTUAL_HOST: d.mc.${TOP_DOMAIN}
+            CERT_CN: '*.mc.example.com'
+            VIRTUAL_HOST: d.mc.example.com
             VIRTUAL_PORT: 8112
     nzbget:
         image: oblique/nzbget
-        network_mode: bridge
         ports:
             - 6789:6789
+        networks:
+            - default
+            - nginx-proxy_default
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/nzbget:/config
             - /mnt/data/media:/data
+        env_file:
+            - user.env
         environment:
-            PUID: ${PUID}
-            PGID: ${PGID}
-            VIRTUAL_HOST: n.mc.${TOP_DOMAIN}
+            CERT_CN: '*.mc.example.com'
+            VIRTUAL_HOST: n.mc.example.com
             VIRTUAL_PORT: 6789
     plex:
         image: oblique/plexpass
-        network_mode: bridge
-        hostname: ${HOSTNAME}
+        hostname: Plex
         ports:
             - 32400:32400
             - 32469:32469
@@ -54,60 +59,54 @@ services:
             - 32412:32412/udp
             - 32413:32413/udp
             - 32414:32414/udp
+        networks:
+            - default
+            - nginx-proxy_default
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/plex:/config
             - /mnt/data/media:/data
+        env_file:
+            - user.env
         environment:
-            PUID: ${PUID}
-            PGID: ${PUID}
-            VIRTUAL_HOST: p.mc.${TOP_DOMAIN}
+            CERT_CN: '*.mc.example.com'
+            VIRTUAL_HOST: p.mc.example.com
             VIRTUAL_PORT: 32400
-    jackett:
-        image: oblique/jackett
-        network_mode: bridge
-        ports:
-            - 9117:9117
-            - 9118:9118
-        volumes:
-            - /etc/localtime:/etc/localtime:ro
-            - /mnt/data/docker/jackett:/config
-        environment:
-            PUID: ${PUID}
-            PGID: ${PGID}
     sonarr:
         image: oblique/sonarr
-        network_mode: bridge
         ports:
             - 8989:8989
-        links:
-            - jackett
-            - deluge
-            - nzbget
+        networks:
+            - default
+            - nginx-proxy_default
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/sonarr:/config
             - /mnt/data/media:/data
+        env_file:
+            - user.env
         environment:
-            PUID: ${PUID}
-            PGID: ${PGID}
-            VIRTUAL_HOST: s.mc.${TOP_DOMAIN}
+            CERT_CN: '*.mc.example.com'
+            VIRTUAL_HOST: s.mc.example.com
             VIRTUAL_PORT: 8989
     radarr:
         image: oblique/radarr
-        network_mode: bridge
         ports:
             - 7878:7878
-        links:
-            - jackett
-            - deluge
-            - nzbget
+        networks:
+            - default
+            - nginx-proxy_default
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/radarr:/config
             - /mnt/data/media:/data
+        env_file:
+            - user.env
         environment:
-            PUID: ${PUID}
-            PGID: ${PGID}
-            VIRTUAL_HOST: r.mc.${TOP_DOMAIN}
+            CERT_CN: '*.mc.example.com'
+            VIRTUAL_HOST: r.mc.example.com
             VIRTUAL_PORT: 7878
+
+networks:
+    nginx-proxy_default:
+        external: true
