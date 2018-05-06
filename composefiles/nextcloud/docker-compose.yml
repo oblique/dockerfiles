@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+    db:
+        image: postgres
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /mnt/data/docker/nextcloud/db:/var/lib/postgresql/data
+        secrets:
+            - db_passwd
+        environment:
+            POSTGRES_PASSWORD_FILE: /run/secrets/db_passwd
+    app:
+        image: nextcloud:production
+        networks:
+            - default
+            - nginx-proxy_default
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /mnt/data/docker/nextcloud/app:/var/www/html
+        environment:
+            VIRTUAL_HOST: nc.example.com
+            VIRTUAL_PORT: 80
+
+networks:
+    nginx-proxy_default:
+        external: true
+
+secrets:
+    db_passwd:
+        file: db_passwd
