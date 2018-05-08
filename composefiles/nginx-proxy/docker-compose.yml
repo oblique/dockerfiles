@@ -13,7 +13,7 @@ services:
             - dhparam:/etc/nginx/dhparam
         environment:
             SSL_POLICY: Mozilla-Modern
-            RELOAD_CERTS_CMD: nginx -s reload
+            RELOAD_CERTS_CMD: docker-gen -notify "nginx -s reload" /app/nginx.tmpl /etc/nginx/conf.d/default.conf
     letsencrypt:
         image: oblique/letsencrypt-route53
         volumes:
