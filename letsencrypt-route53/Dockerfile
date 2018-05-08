@@ -2,6 +2,7 @@ FROM alpine
 
 ADD install.sh /
 RUN /install.sh && rm -f /install.sh
+ENV DOCKER_HOST "unix:///tmp/docker.sock"
 
 VOLUME /certs
 

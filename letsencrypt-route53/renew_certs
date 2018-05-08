@@ -16,8 +16,6 @@ gen_alias() {
 args=()
 [[ "$1" == '-f' ]] && args+=('--force')
 
-export DOCKER_HOST="${DOCKER_HOST:-unix:///tmp/docker.sock}"
-
 if [[ -z "$AWS_ACCESS_KEY_ID" && -s "$AWS_ACCESS_KEY_ID_FILE" ]]; then
     export AWS_ACCESS_KEY_ID="$(tr -d '[:space:]' < "$AWS_ACCESS_KEY_ID_FILE")"
 fi
