@@ -38,6 +38,6 @@ volumes:
 
 secrets:
     aws_access_key_id:
-        file: aws_access_key_id
+        external: true
     aws_secret_access_key:
-        file: aws_secret_access_key
+        external: true
