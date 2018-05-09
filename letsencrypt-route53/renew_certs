@@ -53,7 +53,7 @@ while read virtual_host cert_cn; do
     elif [[ -n "$virtual_host" ]]; then
         cert_dir="$virtual_host"
     fi
-    ln -sf "${cert_dir}/cert.pem" "/certs/${virtual_host}.crt"
+    ln -sf "${cert_dir}/fullchain.pem" "/certs/${virtual_host}.crt"
     ln -sf "${cert_dir}/privkey.pem" "/certs/${virtual_host}.key"
     ln -sf "${cert_dir}/chain.pem" "/certs/${virtual_host}.chain.pem"
 done < /tmp/domains_dump
