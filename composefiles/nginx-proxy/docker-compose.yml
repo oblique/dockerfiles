@@ -1,11 +1,17 @@
-version: '3.1'
+version: '3.2'
 
 services:
     nginx-proxy:
         image: jwilder/nginx-proxy
         ports:
-            - 80:80
-            - 443:443
+            - mode: host
+              protocol: tcp
+              published: 80
+              target: 80
+            - mode: host
+              protocol: tcp
+              published: 443
+              target: 443
         volumes:
             - /var/run/docker.sock:/tmp/docker.sock:ro
             - /root/docker/nginx-proxy/htpasswd:/etc/nginx/htpasswd:ro
