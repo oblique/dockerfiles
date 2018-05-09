@@ -1,7 +1,0 @@
-CHALLENGETYPE=dns-01
-DOMAINS_TXT=/config/domains.txt
-CERTDIR=/config/certs
-KEY_ALGO=rsa
-KEYSIZE=4096
-HOOK=/opt/nsupdate_hook.sh
-LOCKFILE=/tmp/lock
