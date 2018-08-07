@@ -1,0 +1,15 @@
+version: '3.2'
+
+services:
+    tinc:
+        image: oblique/tinc
+        restart: always
+        network_mode: host
+        cap_add:
+            - NET_ADMIN
+        devices:
+            - /dev/net/tun
+        volumes:
+            - /etc/tinc:/etc/tinc
+        env_file:
+            - config
