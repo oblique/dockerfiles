@@ -1,3 +1,5 @@
+**DEPRECATED. Use [oblique/archlinux-yay](https://hub.docker.com/r/oblique/archlinux-yay).**
+
 ## Image
 
 Docker image of [ArchLinux](https://www.archlinux.org) with [pacaur](https://github.com/rmarquis/pacaur) installed.
