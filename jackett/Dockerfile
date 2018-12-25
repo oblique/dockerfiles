@@ -1,4 +1,4 @@
-FROM pritunl/archlinux
+FROM base/archlinux
 
 ADD install.sh /
 RUN /install.sh && rm -f /install.sh

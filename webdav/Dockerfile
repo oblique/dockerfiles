@@ -1,4 +1,4 @@
-FROM pritunl/archlinux
+FROM base/archlinux
 
 RUN pacman --noconfirm -Syyu && \
     pacman --noconfirm -S supervisor apache && \
