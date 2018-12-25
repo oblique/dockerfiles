@@ -1,4 +1,4 @@
-FROM pritunl/archlinux
+FROM base/archlinux
 
 # Use `/usr/bin/true` as a dummy editor
 ENV EDITOR=true
