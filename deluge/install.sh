@@ -9,7 +9,6 @@ github_latest_release() {
 pacman --noconfirm -Syyu
 pacman --noconfirm -S supervisor deluge python2-mako python2-service-identity
 pacman -Qtdq | xargs -r pacman --noconfirm -Rcns
-yes | pacman -Scc
 
 mkdir -p /opt
 cd /opt

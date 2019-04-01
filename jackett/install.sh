@@ -25,4 +25,3 @@ tar xvf jackett-public.tar.gz -C /opt
 
 cd /
 rm -rf /build
-yes | pacman -Scc

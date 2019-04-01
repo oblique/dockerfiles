@@ -1,4 +1,4 @@
-FROM base/archlinux
+FROM archlinux/base
 
 ADD install.sh /
 RUN /install.sh && rm -f /install.sh

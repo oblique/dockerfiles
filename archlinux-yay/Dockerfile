@@ -1,4 +1,4 @@
-FROM base/archlinux
+FROM archlinux/base
 
 RUN echo '[multilib]' >> /etc/pacman.conf && \
     echo 'Include = /etc/pacman.d/mirrorlist' >> /etc/pacman.conf && \
@@ -18,7 +18,6 @@ RUN echo '[multilib]' >> /etc/pacman.conf && \
     sudo -u aur makepkg --noconfirm -si && \
     sudo -u aur yay --afterclean --removemake --save && \
     pacman -Qtdq | xargs -r pacman --noconfirm -Rcns && \
-    yes | pacman -Scc && \
     rm -rf /home/aur/.cache && \
     rm -rf /build
 

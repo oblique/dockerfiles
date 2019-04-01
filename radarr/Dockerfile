@@ -1,8 +1,7 @@
-FROM base/archlinux
+FROM archlinux/base
 
 RUN pacman --noconfirm -Syyu && \
-    pacman --noconfirm -S mono sqlite supervisor curl libmediainfo libgdiplus && \
-    yes | pacman -Scc
+    pacman --noconfirm -S mono sqlite supervisor curl libmediainfo libgdiplus
 
 RUN useradd -m -s /bin/bash user && \
     passwd -d user

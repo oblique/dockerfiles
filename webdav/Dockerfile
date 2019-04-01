@@ -1,8 +1,7 @@
-FROM base/archlinux
+FROM archlinux/base
 
 RUN pacman --noconfirm -Syyu && \
-    pacman --noconfirm -S supervisor apache && \
-    yes | pacman -Scc
+    pacman --noconfirm -S supervisor apache
 
 VOLUME /data /config
 EXPOSE 80 443

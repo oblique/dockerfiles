@@ -20,6 +20,5 @@ Cleanup:
 
 ```
 pacman -Qtdq | xargs -r pacman --noconfirm -Rcns
-yes | pacman -Scc
 rm -rf /home/aur/.cache
 ```
