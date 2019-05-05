@@ -73,16 +73,16 @@ services:
             VIRTUAL_HOST: p.mc.example.com
             VIRTUAL_PORT: 32400
     sonarr:
-        image: oblique/sonarr
+        image: linuxserver/sonarr
         ports:
             - 8989:8989
         networks:
             - default
             - nginx-proxy_default
         volumes:
-            - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/sonarr:/config
-            - /mnt/data/media:/data
+            - /mnt/data/media/series:/tv
+            - /mnt/data/media/downloads/complete/nzb/Series:/downloads
         env_file:
             - user.env
         environment:
@@ -90,7 +90,7 @@ services:
             VIRTUAL_HOST: s.mc.example.com
             VIRTUAL_PORT: 8989
     radarr:
-        image: oblique/radarr
+        image: linuxserver/radarr
         ports:
             - 7878:7878
         networks:
@@ -99,7 +99,8 @@ services:
         volumes:
             - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/radarr:/config
-            - /mnt/data/media:/data
+            - /mnt/data/media/movies:/movies
+            - /mnt/data/media/downloads/complete/nzb/Movies:/downloads
         env_file:
             - user.env
         environment:
