@@ -49,7 +49,7 @@ services:
             VIRTUAL_HOST: n.mc.example.com
             VIRTUAL_PORT: 6789
     plex:
-        image: oblique/plexpass
+        image: linuxserver/plex
         hostname: Plex
         ports:
             - 32400:32400
@@ -69,6 +69,7 @@ services:
         env_file:
             - user.env
         environment:
+            VERSION: latest
             CERT_CN: '*.mc.example.com'
             VIRTUAL_HOST: p.mc.example.com
             VIRTUAL_PORT: 32400
