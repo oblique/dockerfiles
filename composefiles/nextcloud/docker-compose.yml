@@ -3,29 +3,31 @@ version: '3.1'
 services:
     db:
         image: postgres
+        restart: always
+        networks:
+            - web
         volumes:
-            - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/nextcloud/db:/var/lib/postgresql/data
-        secrets:
-            - db_passwd
+            - /root/secrets/nextcloud-db-passwd:/run/secrets/nextcloud-db-passwd:ro
+        env_file:
+            - ../common.env
         environment:
-            POSTGRES_PASSWORD_FILE: /run/secrets/db_passwd
+            POSTGRES_PASSWORD_FILE: /run/secrets/nextcloud-db-passwd
     app:
         image: nextcloud:production
+        restart: always
         networks:
-            - default
-            - nginx-proxy_default
+            - web
+        links:
+            - db
         volumes:
-            - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/nextcloud/app:/var/www/html
-        environment:
-            VIRTUAL_HOST: nc.example.com
-            VIRTUAL_PORT: 80
+        env_file:
+            - ../common.env
+        labels:
+            traefik.enable: true
+            traefik.frontend.rule: Host:nc.example.com
 
 networks:
-    nginx-proxy_default:
+    web:
         external: true
-
-secrets:
-    db_passwd:
-        file: db_passwd

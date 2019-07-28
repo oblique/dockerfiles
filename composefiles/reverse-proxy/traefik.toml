@@ -1,0 +1,35 @@
+defaultEntryPoints = ["https"]
+
+[entryPoints]
+
+[entryPoints.http]
+address = ":80"
+
+[entryPoints.https]
+address = ":443"
+
+[entryPoints.https.tls]
+
+[api]
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+watch = true
+exposedByDefault = false
+network = "web"
+
+[acme]
+email = "futureneo@gmail.com"
+storage = "/data/acme.json"
+entryPoint = "https"
+
+[acme.dnsChallenge]
+provider = "route53"
+
+[[acme.domains]]
+main = "*.example.com"
+sans = ["example.com"]
+
+[[acme.domains]]
+main = "*.mc.example.com"
+sans = ["mc.example.com"]

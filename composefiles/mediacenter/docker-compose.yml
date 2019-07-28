@@ -3,6 +3,9 @@ version: '3.1'
 services:
     deluge:
         image: oblique/deluge
+        restart: always
+        networks:
+            - web
         ports:
             - 8112:8112 # web ui
             - 58846:58846 # daemon
@@ -10,14 +13,11 @@ services:
             - 59912:59912/udp # incoming
             - 59922:59922 # outgoing
             - 59922:59922/udp # outgoing
-        networks:
-            - default
-            - nginx-proxy_default
         volumes:
-            - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/deluge:/config
             - /mnt/data/media:/data
         env_file:
+            - ../common.env
             - user.env
         environment:
             INCOMING_PORT_RANGE: 59912-59912
@@ -28,29 +28,33 @@ services:
             LSD: 'false'
             DHT: 'false'
             UTP: 'false'
-            CERT_CN: '*.mc.example.com'
-            VIRTUAL_HOST: d.mc.example.com
-            VIRTUAL_PORT: 8112
+        labels:
+            traefik.enable: true
+            traefik.port: 8112
+            traefik.frontend.rule: Host:d.mc.example.com
     nzbget:
         image: oblique/nzbget
+        restart: always
+        networks:
+            - web
         ports:
             - 6789:6789
-        networks:
-            - default
-            - nginx-proxy_default
         volumes:
-            - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/nzbget:/config
             - /mnt/data/media:/data
         env_file:
+            - ../common.env
             - user.env
-        environment:
-            CERT_CN: '*.mc.example.com'
-            VIRTUAL_HOST: n.mc.example.com
-            VIRTUAL_PORT: 6789
+        labels:
+            traefik.enable: true
+            traefik.port: 6789
+            traefik.frontend.rule: Host:n.mc.example.com
     plex:
         image: linuxserver/plex
+        restart: always
         hostname: Plex
+        networks:
+            - web
         ports:
             - 32400:32400
             - 32469:32469
@@ -59,56 +63,61 @@ services:
             - 32412:32412/udp
             - 32413:32413/udp
             - 32414:32414/udp
-        networks:
-            - default
-            - nginx-proxy_default
         volumes:
-            - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/plex:/config
             - /mnt/data/media:/data
         env_file:
+            - ../common.env
             - user.env
         environment:
             VERSION: latest
-            CERT_CN: '*.mc.example.com'
-            VIRTUAL_HOST: p.mc.example.com
-            VIRTUAL_PORT: 32400
+        labels:
+            traefik.enable: true
+            traefik.port: 32400
+            traefik.frontend.rule: Host:p.mc.example.com
     sonarr:
         image: linuxserver/sonarr
+        restart: always
+        networks:
+            - web
         ports:
             - 8989:8989
-        networks:
-            - default
-            - nginx-proxy_default
+        links:
+            - nzbget
+            - deluge
         volumes:
             - /mnt/data/docker/sonarr:/config
             - /mnt/data/media/series:/tv
             - /mnt/data/media/downloads/complete/nzb/Series:/downloads
         env_file:
+            - ../common.env
             - user.env
-        environment:
-            CERT_CN: '*.mc.example.com'
-            VIRTUAL_HOST: s.mc.example.com
-            VIRTUAL_PORT: 8989
+        labels:
+            traefik.enable: true
+            traefik.port: 8989
+            traefik.frontend.rule: Host:s.mc.example.com
     radarr:
         image: linuxserver/radarr
+        restart: always
+        networks:
+            - web
         ports:
             - 7878:7878
-        networks:
-            - default
-            - nginx-proxy_default
+        links:
+            - nzbget
+            - deluge
         volumes:
-            - /etc/localtime:/etc/localtime:ro
             - /mnt/data/docker/radarr:/config
             - /mnt/data/media/movies:/movies
             - /mnt/data/media/downloads/complete/nzb/Movies:/downloads
         env_file:
+            - ../common.env
             - user.env
-        environment:
-            CERT_CN: '*.mc.example.com'
-            VIRTUAL_HOST: r.mc.example.com
-            VIRTUAL_PORT: 7878
+        labels:
+            traefik.enable: true
+            traefik.port: 7878
+            traefik.frontend.rule: Host:r.mc.example.com
 
 networks:
-    nginx-proxy_default:
+    web:
         external: true

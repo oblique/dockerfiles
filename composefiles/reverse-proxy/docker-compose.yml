@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+    traefik:
+        image: traefik
+        command: -c /config.toml
+        restart: always
+        networks:
+            - web
+        ports:
+            - 80:80
+            - 443:443
+            - 8080:8080
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - ./traefik.toml:/traefik.toml
+            - data:/data
+        env_file:
+            - ../common.env
+            # Define AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in /root/secrets/aws.env
+            - /root/secrets/aws.env
+    whoami:
+        image: containous/whoami
+        restart: always
+        networks:
+            - web
+        env_file:
+            - ../common.env
+        labels:
+            traefik.enable: true
+            traefik.frontend.rule: Host:whoami.docker.localhost
+            traefik.frontend.entryPoints: http
+
+volumes:
+    data:
+
+networks:
+    web:
+        external: true
