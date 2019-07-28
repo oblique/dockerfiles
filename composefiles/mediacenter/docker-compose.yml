@@ -32,6 +32,8 @@ services:
             traefik.enable: true
             traefik.port: 8112
             traefik.frontend.rule: Host:d.mc.example.com
+            traefik.frontend.auth.basic.usersFile: /run/secrets/htpasswd
+            traefik.frontend.auth.basic.removeHeader: true
     nzbget:
         image: oblique/nzbget
         restart: always
@@ -49,6 +51,7 @@ services:
             traefik.enable: true
             traefik.port: 6789
             traefik.frontend.rule: Host:n.mc.example.com
+            # nzbget has its own basic auth
     plex:
         image: linuxserver/plex
         restart: always
@@ -96,6 +99,8 @@ services:
             traefik.enable: true
             traefik.port: 8989
             traefik.frontend.rule: Host:s.mc.example.com
+            traefik.frontend.auth.basic.usersFile: /run/secrets/htpasswd
+            traefik.frontend.auth.basic.removeHeader: true
     radarr:
         image: linuxserver/radarr
         restart: always
@@ -117,6 +122,8 @@ services:
             traefik.enable: true
             traefik.port: 7878
             traefik.frontend.rule: Host:r.mc.example.com
+            traefik.frontend.auth.basic.usersFile: /run/secrets/htpasswd
+            traefik.frontend.auth.basic.removeHeader: true
 
 networks:
     web:
