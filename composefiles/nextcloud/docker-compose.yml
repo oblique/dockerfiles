@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
     db:
-        image: postgres
+        image: postgres:10
         restart: always
         networks:
             - web
@@ -14,7 +14,7 @@ services:
         environment:
             POSTGRES_PASSWORD_FILE: /run/secrets/nextcloud-db-passwd
     app:
-        image: nextcloud:production
+        image: nextcloud:stable
         restart: always
         networks:
             - web
