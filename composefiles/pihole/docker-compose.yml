@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+    pihole:
+        image: pihole/pihole
+        restart: always
+        ports:
+            - 53:53/tcp
+            - 53:53/udp
+            - 80:80
+            - 443:443
+        env_file:
+            - ../common.env
+        volumes:
+            - ./etc-pihole:/etc/pihole
+            - ./etc-dnsmasq.d:/etc/dnsmasq.d
