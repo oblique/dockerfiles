@@ -35,7 +35,7 @@ services:
             traefik.frontend.auth.basic.usersFile: /run/secrets/htpasswd
             traefik.frontend.auth.basic.removeHeader: true
     nzbget:
-        image: oblique/nzbget
+        image: linuxserver/nzbget
         restart: always
         networks:
             - web
@@ -44,6 +44,7 @@ services:
         volumes:
             - /mnt/data/docker/nzbget:/config
             - /mnt/data/media:/data
+            - /dev/null:/downloads
         env_file:
             - ../common.env
             - user.env
