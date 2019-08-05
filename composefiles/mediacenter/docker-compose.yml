@@ -67,6 +67,7 @@ services:
             - 32413:32413/udp
             - 32414:32414/udp
         volumes:
+            - plex-transcode-data:/transcode
             - /mnt/data/docker/plex:/config
             - /mnt/data/media:/data
         env_file:
@@ -90,8 +91,9 @@ services:
             - deluge
         volumes:
             - /mnt/data/docker/sonarr:/config
-            - /mnt/data/media/series:/tv
-            - /mnt/data/media/downloads/complete/nzb/Series:/downloads
+            - /mnt/data/media:/data
+            - /dev/null:/tv
+            - /dev/null:/downloads
         env_file:
             - ../common.env
             - user.env
@@ -113,8 +115,9 @@ services:
             - deluge
         volumes:
             - /mnt/data/docker/radarr:/config
-            - /mnt/data/media/movies:/movies
-            - /mnt/data/media/downloads/complete/nzb/Movies:/downloads
+            - /mnt/data/media:/data
+            - /dev/null:/movies
+            - /dev/null:/downloads
         env_file:
             - ../common.env
             - user.env
@@ -124,6 +127,9 @@ services:
             traefik.frontend.rule: Host:r.mc.example.com
             traefik.frontend.auth.basic.usersFile: /run/secrets/htpasswd
             traefik.frontend.auth.basic.removeHeader: true
+
+volumes:
+    plex-transcode-data:
 
 networks:
     web:
