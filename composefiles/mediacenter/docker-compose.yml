@@ -128,6 +128,30 @@ services:
             traefik.frontend.rule: Host:r.mc.example.com
             traefik.frontend.auth.basic.usersFile: /run/secrets/htpasswd
             traefik.frontend.auth.basic.removeHeader: true
+    bazarr:
+        image: linuxserver/bazarr
+        restart: always
+        networks:
+            - web
+        ports:
+            - 6767
+        links:
+            - sonarr
+            - radarr
+        volumes:
+            - /mnt/data/docker/bazarr:/config
+            - /mnt/data/media:/data
+            - /dev/null:/movies
+            - /dev/null:/tv
+        env_file:
+            - ../common.env
+            - user.env
+        labels:
+            traefik.enable: true
+            traefik.port: 6767
+            traefik.frontend.rule: Host:b.mc.example.com
+            traefik.frontend.auth.basic.usersFile: /run/secrets/htpasswd
+            traefik.frontend.auth.basic.removeHeader: true
 
 volumes:
     plex-transcode-data:
