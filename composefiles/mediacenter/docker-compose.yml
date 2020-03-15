@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
     deluge:
-        image: oblique/deluge
+        image: linuxserver/deluge
         restart: always
         networks:
             - web
@@ -16,18 +16,12 @@ services:
         volumes:
             - /mnt/data/docker/deluge:/config
             - /mnt/data/media:/data
+            - /dev/null:/downloads
         env_file:
             - ../common.env
             - user.env
         environment:
-            INCOMING_PORT_RANGE: 59912-59912
-            OUTGOING_PORT_RANGE: 59922-59922
-            UPNP: 'false'
-            NAT_PMP: 'false'
-            UTPEX: 'false'
-            LSD: 'false'
-            DHT: 'false'
-            UTP: 'false'
+            UMASK_SET: 027
         labels:
             traefik.enable: true
             traefik.port: 8112
