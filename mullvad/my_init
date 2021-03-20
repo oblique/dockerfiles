@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export MULLVAD_SETTINGS_DIR=/config
+
+exec /opt/Mullvad\ VPN/resources/mullvad-daemon -v
