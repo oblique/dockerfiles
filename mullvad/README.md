@@ -28,8 +28,13 @@ mullvad connect
 
 ## Use VPN from another container
 
-Use `--net=container:mullvad_vpn`, for example:
+For `docker run`, use `--net=container:mullvad_vpn`, for example:
 
 ```
 docker run -it --rm --net=container:mullvad_vpn alpine
 ```
+
+For `docker-compose`, check my [vpn-example].
+
+
+[vpn-example]: https://github.com/oblique/dockerfiles/tree/master/composefiles/vpn-example

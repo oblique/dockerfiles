@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+    mullvad:
+        image: oblique/mullvad
+        restart: always
+        privileged: true
+        volumes:
+            - mullvad_config:/config
+    ip:
+        image: alpine
+        depends_on:
+            - mullvad
+        network_mode: service:mullvad
+        command: sh -c 'sleep 1; wget -q -O - https://ifconfig.me/ip; echo'
+
+volumes:
+    mullvad_config:
