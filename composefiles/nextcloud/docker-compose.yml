@@ -2,19 +2,21 @@ version: '3.1'
 
 services:
     db:
-        image: postgres:12
+        image: mysql:8
         restart: always
+        cap_add:
+            - SYS_NICE
         networks:
             - web
         volumes:
-            - /mnt/data/docker/nextcloud/db:/var/lib/postgresql/data
-            - /root/secrets/nextcloud-db-passwd:/run/secrets/nextcloud-db-passwd:ro
+            - /mnt/data/docker/nextcloud/db:/var/lib/mysql
+            - /root/secrets/nextcloud-db-root-passwd:/run/secrets/nextcloud-db-root-passwd:ro
         env_file:
             - ../common.env
         environment:
-            POSTGRES_PASSWORD_FILE: /run/secrets/nextcloud-db-passwd
+            MYSQL_ROOT_PASSWORD_FILE: /run/secrets/nextcloud-db-root-passwd
     app:
-        image: nextcloud:19
+        image: nextcloud:23
         restart: always
         networks:
             - web
