@@ -5,7 +5,7 @@ services:
     build: ../../innernet-server
     restart: always
     ports:
-      - 51820:51820
+      - 51820:51820/udp
     cap_add:
       - NET_ADMIN
     volumes:
