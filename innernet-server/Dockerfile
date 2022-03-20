@@ -17,4 +17,4 @@ VOLUME /config
 VOLUME /data
 
 ADD init.sh /
-CMD ["init.sh"]
+CMD ["/init.sh"]
