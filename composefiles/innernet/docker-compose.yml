@@ -1,0 +1,15 @@
+version: '3.2'
+
+services:
+  innernet-server:
+    build: ../../innernet-server
+    restart: always
+    ports:
+      - 51820:51820
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./config:/config
+      - ./data:/data
+    environment:
+      NETWORK_NAME: mynet
